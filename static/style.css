@@ -162,13 +162,29 @@ ul { list-style: none; }
 .contacts { background: var(--clr-bg-mid); padding: 80px 0; border-top: 1px solid rgba(201,150,58,0.15); }
 .contacts .section-title { color: var(--clr-gold-pale); margin-bottom: 40px; }
 .contacts-grid { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 24px; align-items: start; }
-.contact-card { background: var(--clr-bg-card); border: 1px solid rgba(201,150,58,0.18); border-radius: var(--radius-lg); padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; }
+.contact-card { background: var(--clr-bg-card); border: 1px solid rgba(201,150,58,0.18); border-radius: var(--radius-lg); padding: 32px 28px; display: flex; flex-direction: column; gap: 14px;
+  min-height: 200px; /* Добавь нужную минимальную высоту */
+  flex: 1; /* Растягивать до одинаковой высоты в контейнере */
+  align-items: stretch;
+}
 .contact-logo { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: white; flex-shrink: 0; }
 .wb-bg  { background: var(--clr-wb); }
 .vk-bg  { background: var(--clr-vk); }
 .form-bg { background: linear-gradient(135deg, var(--clr-gold), var(--clr-amber)); font-size: 22px; }
-.contact-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--clr-gold-pale); }
-.contact-card p { font-size: 13px; color: var(--clr-text-muted); line-height: 1.65; }
+.contact-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--clr-gold-pale);
+  margin: 0; /* Убрать отступы по умолчанию */
+}
+.contact-card p {
+  font-size: 13px;
+  color: var(--clr-text-muted);
+  line-height: 1.65;
+  margin: 0; /* Убрать отступы по умолчанию */
+  margin-top: auto; /* Прижать текст к низу если контента мало */
+}
 .contact-form { display: flex; flex-direction: column; gap: 10px; }
 .contact-form input, .contact-form textarea { width: 100%; padding: 11px 16px; border: 1px solid rgba(201,150,58,0.25); border-radius: var(--radius); background: rgba(255,255,255,0.05); color: var(--clr-text-light); font-family: 'Raleway', sans-serif; font-size: 14px; transition: var(--transition); }
 .contact-form input::placeholder, .contact-form textarea::placeholder { color: rgba(158,126,94,0.7); }
@@ -228,4 +244,141 @@ ul { list-style: none; }
   background: rgba(180,60,60,0.2);
   color: #e07070;
   border: 1px solid rgba(180,60,60,0.35);
+}
+
+/* ─── КОНТАКТЫ: 4-колоночная сетка ─────────────────────── */
+.contacts-grid--4 {
+  grid-template-columns: 1fr 1fr 1fr 1.5fr;
+}
+/* Переопределяем форму — она больше не span 2 */
+.contacts-grid--4 .form-card {
+  grid-column: span 1;
+}
+
+/* МАКС логотип */
+.max-bg {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ─── СПОСОБ СВЯЗИ — РАДИОКНОПКИ ────────────────────────── */
+.contact-method {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.contact-method__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--clr-gold-light);
+  letter-spacing: 0.3px;
+}
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 6px 0;
+}
+/* Скрыть нативный input */
+.radio-item input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+  pointer-events: none;
+}
+/* Кастомный кружок */
+.radio-custom {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(201,150,58,0.4);
+  background: transparent;
+  position: relative;
+  transition: var(--transition);
+}
+.radio-custom::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--clr-gold);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: var(--transition);
+}
+.radio-item input[type="radio"]:checked ~ .radio-custom {
+  border-color: var(--clr-gold);
+}
+.radio-item input[type="radio"]:checked ~ .radio-custom::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.radio-text {
+  font-size: 13px;
+  color: #c4a882;
+  transition: var(--transition);
+  user-select: none;
+}
+.radio-item:hover .radio-text { color: var(--clr-gold-light); }
+.radio-item input[type="radio"]:checked ~ .radio-text { color: var(--clr-gold-light); font-weight: 600; }
+
+/* Выпадающее поле времени созвона */
+.cm-extra {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  margin-left: 28px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  animation: slideDown 0.2s ease;
+}
+.cm-extra.visible { display: flex; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cm-extra__input {
+  padding: 9px 12px;
+  border: 1px solid rgba(201,150,58,0.35);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.05);
+  color: var(--clr-text-light);
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  color-scheme: dark;
+}
+.cm-extra__input:focus {
+  outline: none;
+  border-color: var(--clr-gold);
+  background: rgba(255,255,255,0.08);
+}
+.cm-extra__hint {
+  font-size: 11px;
+  color: var(--clr-text-muted);
+  padding-left: 2px;
+}
+
+/* ─── RESPONSIVE для 4 колонок ──────────────────────────── */
+@media (max-width: 1200px) {
+  .contacts-grid--4 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .contacts-grid--4 .form-card {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 600px) {
+  .contacts-grid--4 {
+    grid-template-columns: 1fr;
+  }
+  .contacts-grid--4 .form-card {
+    grid-column: span 1;
+  }
 }

@@ -59,6 +59,7 @@ SITE_META = {
     "hero_sub": "Дубовая щепа и кубик с кавказа",
     "wb_url": "https://wb.ru",
     "vk_url": "https://vk.com",
+    "max_url": "https://max.ru",  # замени на реальную ссылку
 }
 
 
@@ -83,11 +84,33 @@ def submit():
     name = request.form.get("name", "").strip()
     phone = request.form.get("phone", "").strip()
     email = request.form.get("email", "").strip()
+    contact_method = request.form.get("contact_method", "").strip()  # phone / email / vk / max
+    call_time = request.form.get("call_time", "").strip()  # заполняется если contact_method == "phone"
     message = request.form.get("message", "").strip()
 
-    # TODO: сохранить в БД или отправить email
-    # Например: db.session.add(Lead(name=name, phone=phone, ...))
-    print(f"[ЗАЯВКА] {name} | {phone} | {email}\n  → {message}")
+    method_labels = {
+        "phone": "Позвонить по телефону",
+        "email": "Почта",
+        "vk": "ВКонтакте",
+        "max": "МАКС",
+    }
+    method_str = method_labels.get(contact_method, contact_method)
+    call_time_str = f" (удобное время: {call_time})" if contact_method == "phone" and call_time else ""
+
+    # TODO: сохранить в БД, например:
+    # lead = Lead(
+    #     name=name, phone=phone, email=email,
+    #     contact_method=contact_method, call_time=call_time,
+    #     message=message
+    # )
+    # db.session.add(lead)
+    # db.session.commit()
+
+    print(
+        f"[ЗАЯВКА] {name} | {phone} | {email}\n"
+        f"  Способ связи: {method_str}{call_time_str}\n"
+        f"  Сообщение: {message}"
+    )
 
     flash("Ваша заявка принята! Мы свяжемся с вами в ближайшее время.", "success")
     return redirect(url_for("index") + "#faq")
@@ -98,4 +121,4 @@ def submit():
 # ─────────────────────────────────────────────
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, port=5000)

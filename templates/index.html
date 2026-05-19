@@ -212,7 +212,7 @@
   <section class="contacts" id="contacts">
     <div class="container">
       <h2 class="section-title">Где ещё вы можете нас найти или связаться</h2>
-      <div class="contacts-grid">
+      <div class="contacts-grid contacts-grid--4">
 
         <div class="contact-card">
           <div class="contact-logo wb-bg">WB</div>
@@ -224,8 +224,15 @@
         <div class="contact-card">
           <div class="contact-logo vk-bg">VK</div>
           <h3>Мы ВКонтакте</h3>
-          <p>Следите за новостями, акциями и получайте полезные советы по использованию.</p>
+          <p>Следите за новостями и получайте полезные советы по использованию.</p>
           <a href="{{ meta.vk_url }}" target="_blank" class="btn btn-outline-gold">Перейти в VK →</a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-logo max-bg">MAX</div>
+          <h3>Мы в МАКС</h3>
+          <p>Пишите нам в мессенджере МАКС — отвечаем быстро и удобно.</p>
+          <a href="{{ meta.max_url }}" target="_blank" class="btn btn-outline-gold">Написать в МАКС →</a>
         </div>
 
         <div class="contact-card form-card" id="faq">
@@ -242,10 +249,46 @@
             {% endif %}
           {% endwith %}
 
-          <form class="contact-form" action="{{ url_for('submit') }}" method="POST">
+          <form class="contact-form" action="{{ url_for('submit') }}" method="POST" id="contact-form">
             <input type="text" name="name" placeholder="Ваше имя" required />
             <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" />
             <input type="email" name="email" placeholder="E-mail" />
+
+            <div class="contact-method">
+              <p class="contact-method__label">Способ связи с вами</p>
+              <div class="radio-group">
+
+                <label class="radio-item">
+                  <input type="radio" name="contact_method" value="phone" id="cm-phone" />
+                  <span class="radio-custom"></span>
+                  <span class="radio-text">Позвонить по номеру телефона</span>
+                </label>
+                <div class="cm-extra" id="cm-phone-extra">
+                  <input type="datetime-local" name="call_time" class="cm-extra__input" />
+                  <span class="cm-extra__hint">Удобные дата и время для звонка</span>
+                </div>
+
+                <label class="radio-item">
+                  <input type="radio" name="contact_method" value="email" id="cm-email" />
+                  <span class="radio-custom"></span>
+                  <span class="radio-text">Почта</span>
+                </label>
+
+                <label class="radio-item">
+                  <input type="radio" name="contact_method" value="vk" id="cm-vk" />
+                  <span class="radio-custom"></span>
+                  <span class="radio-text">ВКонтакте</span>
+                </label>
+
+                <label class="radio-item">
+                  <input type="radio" name="contact_method" value="max" id="cm-max" />
+                  <span class="radio-custom"></span>
+                  <span class="radio-text">МАКС</span>
+                </label>
+
+              </div>
+            </div>
+
             <textarea name="message" placeholder="Ваш вопрос или заказ" rows="3"></textarea>
             <button type="submit" class="btn btn-dark full-w">Отправить заявку →</button>
           </form>
@@ -271,5 +314,24 @@
     </div>
   </footer>
 
+
+  <script>
+    // Показывать поле даты/времени только при выборе «Позвонить»
+    const radios = document.querySelectorAll('input[name="contact_method"]');
+    const phoneExtra = document.getElementById('cm-phone-extra');
+
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (radio.value === 'phone' && radio.checked) {
+          phoneExtra.classList.add('visible');
+          phoneExtra.querySelector('input').required = true;
+        } else {
+          phoneExtra.classList.remove('visible');
+          phoneExtra.querySelector('input').required = false;
+          phoneExtra.querySelector('input').value = '';
+        }
+      });
+    });
+  </script>
 </body>
 </html>
