@@ -95,8 +95,8 @@ ul { list-style: none; }
 /* ─── HERO ──────────────────────────────────────────────── */
 .hero { position: relative; min-height: 82vh; display: flex; align-items: flex-end; overflow: hidden; }
 .hero-bg { position: absolute; inset: 0; z-index: 0; }
-.hero-img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; filter: saturate(0.8) brightness(0.7); }
-.hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(26,18,11,0.3) 0%, rgba(26,18,11,0.55) 50%, rgba(26,18,11,0.92) 100%); }
+.hero-img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; filter: saturate(0.7) brightness(1); }
+.hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(90,18,11,0.3) 50%, rgba(26,18,11,0.55) 75%, rgba(26,18,11,0.92) 100%); }
 .hero-content { position: relative; z-index: 2; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 72px; gap: 40px; width: 100%; }
 .hero-left { flex: 1; }
 .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(38px, 6vw, 72px); font-weight: 900; line-height: 1.08; color: var(--clr-gold-pale); text-shadow: 0 2px 30px rgba(0,0,0,0.5); margin-bottom: 10px; }
@@ -109,15 +109,49 @@ ul { list-style: none; }
 .logo-sub { display: block; font-size: 10px; letter-spacing: 2px; color: var(--clr-text-muted); margin-top: 4px; }
 
 /* ─── О КОМПАНИИ ────────────────────────────────────────── */
+/* Попытка Небольших изменений */
+.purity-card {
+  position: relative;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(44,31,19,0.97) 0%,
+      rgba(44,31,19,0.93) 50%,
+      rgba(44,31,19,0.25) 66%,
+      rgba(44,31,19,0.02) 88%,
+      rgba(44,31,19,0) 100%
+    ),
+    url("images/главнаяонас.png");
+
+  background-size: cover;
+  background-position: right -52px;
+
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(201,150,58,0.2);
+
+  min-height: 240px;
+
+  display: flex;
+  align-items: center;
+}
+
+.purity-body {
+  padding: 30px;
+  max-width: 60%;
+}
+
 .about { background: var(--clr-bg-light); padding: 80px 0; }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
 .about-text .section-title { color: var(--clr-text-dark); }
 .about-text p { color: #4a3520; margin-bottom: 16px; line-height: 1.8; }
-.purity-card { background: var(--clr-bg-card); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid rgba(201,150,58,0.2); }
+/* .purity-card { background: var(--clr-bg-card); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid rgba(201,150,58,0.2); }
 .purity-img { height: 200px; overflow: hidden; }
 .purity-img img { width: 100%; height: 100%; object-fit: cover; }
-.purity-body { padding: 28px; }
-.purity-body h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--clr-gold-pale); margin-bottom: 20px; line-height: 1.35; }
+.purity-body { padding: 28px; } */
+.purity-body h3 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--clr-gold-pale); margin-bottom: 20px; line-height: 1.35; }
 .purity-list { display: flex; flex-direction: column; gap: 16px; }
 .purity-list li { display: flex; gap: 12px; font-size: 14px; color: #c4a882; line-height: 1.6; }
 .purity-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 2px; }

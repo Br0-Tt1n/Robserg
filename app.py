@@ -15,7 +15,7 @@ PRODUCTS = [
         "description": "Мягкий ванильный аромат, золотистый цвет. Идеально для самогона и кальвадоса.",
         "price": 350,
         "badge": "Хит",
-        "image_url": "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=500&auto=format&q=80",
+        "image_url": "static/images/ЛегкийОбжиг.png",
     },
     {
         "id": 2,
@@ -23,7 +23,7 @@ PRODUCTS = [
         "description": "Баланс ванили и карамели. Универсальный выбор для виски и коньяка.",
         "price": 390,
         "badge": "Топ продаж",
-        "image_url": "https://images.unsplash.com/photo-1605493725784-56fcb5d47a63?w=500&auto=format&q=80",
+        "image_url": "static/images/СреднийСреднийЩепа.png",
     },
     {
         "id": 3,
@@ -31,7 +31,7 @@ PRODUCTS = [
         "description": "Глубокий дымный вкус с нотами шоколада и кофе. Для тёмных дистиллятов.",
         "price": 420,
         "badge": None,
-        "image_url": "https://images.unsplash.com/photo-1574196199733-a81571fffe3e?w=500&auto=format&q=80",
+        "image_url": "static/images/щепасредний.png",
     },
     {
         "id": 4,
@@ -39,7 +39,7 @@ PRODUCTS = [
         "description": "Крупная фракция для длительной выдержки. Равномерная экстракция дубильных веществ.",
         "price": 480,
         "badge": "Новинка",
-        "image_url": "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=500&auto=format&q=80",
+        "image_url": "static/images/среднийкубик.png",
     },
 ]
 
