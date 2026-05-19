@@ -122,7 +122,7 @@ ul { list-style: none; }
       rgba(44,31,19,0.02) 88%,
       rgba(44,31,19,0) 100%
     ),
-    url("images/главнаяонас.png");
+    url("images/MainAboutMe.png");
 
   background-size: cover;
   background-position: right -52px;
