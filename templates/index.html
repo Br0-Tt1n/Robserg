@@ -1,44 +1,13 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{{ meta.title }}</title>
-  <link rel="stylesheet" href="static/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-</head>
-<body>
+{% extends "base.html" %}
 
-  <!-- ════════════ HEADER ════════════ -->
-  <header class="site-header">
-    <div class="header-inner container">
-      <nav class="main-nav">
-        {% for link in nav_links %}
-        <a href="{{ link.href }}" class="nav-link {% if loop.first %}active{% endif %}">{{ link.label }}</a>
-        {% endfor %}
-        <a href="#faq" class="nav-link nav-question">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Остались вопросы?
-        </a>
-      </nav>
-      <div class="header-icons">
-        <button class="icon-btn" aria-label="Поиск">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        </button>
-        <button class="icon-btn" aria-label="Профиль">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </button>
-        <button class="icon-btn" aria-label="Корзина">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        </button>
-      </div>
-    </div>
-  </header>
+{% block title %}{{ meta.title }}{% endblock %}
+
+{% block content %}
 
   <!-- ════════════ HERO ════════════ -->
   <section class="hero">
     <div class="hero-bg">
-      <img src="../static/images/main.png" alt="Горы Кавказа" class="hero-img"/>
+      <img src="{{ url_for('static', filename='images/main.png') }}" alt="Горы Кавказа" class="hero-img"/>
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-content container">
@@ -46,23 +15,17 @@
         <h1 class="hero-title">{{ meta.hero_title | replace('\n', '<br>') | safe }}</h1>
         <p class="hero-sub">{{ meta.hero_sub }}</p>
         <div class="hero-btns">
-          <a href="#catalog" class="btn btn-dark">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            В каталог
-          </a>
-          <a href="{{ meta.wb_url }}" target="_blank" class="btn btn-wb">
-            <span class="wb-badge">WB</span>
-            Наш магазин на WB
-          </a>
+          <a href="#catalog" class="btn btn-img"></a>
+          <a href="{{ meta.wb_url }}" target="_blank" class="btn btn-wb"></a>
         </div>
       </div>
+      <!-- Большой логотип в hero (перетекает в хедер при скролле) -->
       <div class="hero-logo-wrap">
-        <div class="logo-badge">
-          <div class="logo-circle">
-            <span class="logo-main">{{ meta.logo_text }}</span>
-            <span class="logo-sub">· {{ meta.logo_since }} ·</span>
-          </div>
-        </div>
+        <a href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='images/Logo.png') }}"
+               alt="{{ meta.logo_text }}"
+               class="hero-logo-img" />
+        </a>
       </div>
     </div>
   </section>
@@ -77,10 +40,6 @@
       </div>
       <div class="about-card-wrap">
         <div class="purity-card">
-<!--          <div class="purity-img">-->
-<!--            <img src="../static/images/MainAboutMe.png" alt="Дубовая щепа">-->
-<!--          </div>-->
-<!--            Был выбран способ через css, т.к там легче настроить фон-->
           <div class="purity-body">
             <h3>Чистота продукта —<br>наш приоритет</h3>
             <ul class="purity-list">
@@ -104,36 +63,12 @@
     <div class="container">
       <h2 class="section-title centered">Наши Преимущества</h2>
       <div class="adv-grid">
-        <div class="adv-card">
-          <div class="adv-icon">🌲</div>
-          <h4>Кавказский дуб</h4>
-          <p>Используем отборную древесину из экологически чистых регионов</p>
-        </div>
-        <div class="adv-card">
-          <div class="adv-icon">🔥</div>
-          <h4>Контроль обжига</h4>
-          <p>Точные степени обжига для нужного вкуса и аромата</p>
-        </div>
-        <div class="adv-card">
-          <div class="adv-icon">✅</div>
-          <h4>Стабильное качество</h4>
-          <p>Каждая партия проходит проверку перед отправкой</p>
-        </div>
-        <div class="adv-card">
-          <div class="adv-icon">🪵</div>
-          <h4>Чистое сырьё</h4>
-          <p>Без коры, сучков, табачки и посторонних примесей</p>
-        </div>
-        <div class="adv-card">
-          <div class="adv-icon">📦</div>
-          <h4>Удобная фракция</h4>
-          <p>Оптимальный размер щепы для равномерной ароматизации</p>
-        </div>
-        <div class="adv-card">
-          <div class="adv-icon">🚚</div>
-          <h4>Быстрая доставка</h4>
-          <p>Оперативно отправляем заказы по всей стране</p>
-        </div>
+        <div class="adv-card"><div class="adv-icon">🌲</div><h4>Кавказский дуб</h4><p>Используем отборную древесину из экологически чистых регионов</p></div>
+        <div class="adv-card"><div class="adv-icon">🔥</div><h4>Контроль обжига</h4><p>Точные степени обжига для нужного вкуса и аромата</p></div>
+        <div class="adv-card"><div class="adv-icon">✅</div><h4>Стабильное качество</h4><p>Каждая партия проходит проверку перед отправкой</p></div>
+        <div class="adv-card"><div class="adv-icon">🪵</div><h4>Чистое сырьё</h4><p>Без коры, сучков, табачки и посторонних примесей</p></div>
+        <div class="adv-card"><div class="adv-icon">📦</div><h4>Удобная фракция</h4><p>Оптимальный размер щепы для равномерной ароматизации</p></div>
+        <div class="adv-card"><div class="adv-icon">🚚</div><h4>Быстрая доставка</h4><p>Оперативно отправляем заказы по всей стране</p></div>
       </div>
     </div>
   </section>
@@ -143,11 +78,10 @@
     <div class="container">
       <h2 class="section-title">Каталог продукции</h2>
       <div class="catalog-grid">
-        {# Jinja2: итерация по товарам из БД #}
         {% for product in products %}
         <div class="product-card">
           <div class="product-img-wrap">
-            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            <img src="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}" alt="{{ product.name }}">
             {% if product.badge %}
             <span class="product-badge">{{ product.badge }}</span>
             {% endif %}
@@ -162,49 +96,15 @@
           </div>
         </div>
         {% else %}
-        {# Заглушки до подключения БД #}
-        <div class="product-card skeleton">
-          <div class="skeleton-img"></div>
-          <div class="skeleton-body">
-            <div class="skeleton-line w70"></div>
-            <div class="skeleton-line w50"></div>
-            <div class="skeleton-line w90"></div>
-          </div>
-        </div>
-        <div class="product-card skeleton">
-          <div class="skeleton-img"></div>
-          <div class="skeleton-body">
-            <div class="skeleton-line w80"></div>
-            <div class="skeleton-line w60"></div>
-            <div class="skeleton-line w70"></div>
-          </div>
-        </div>
-        <div class="product-card skeleton">
-          <div class="skeleton-img"></div>
-          <div class="skeleton-body">
-            <div class="skeleton-line w60"></div>
-            <div class="skeleton-line w80"></div>
-            <div class="skeleton-line w50"></div>
-          </div>
-        </div>
-        <div class="product-card skeleton">
-          <div class="skeleton-img"></div>
-          <div class="skeleton-body">
-            <div class="skeleton-line w75"></div>
-            <div class="skeleton-line w55"></div>
-            <div class="skeleton-line w85"></div>
-          </div>
-        </div>
+        <div class="product-card skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w70"></div><div class="skeleton-line w50"></div><div class="skeleton-line w90"></div></div></div>
+        <div class="product-card skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w70"></div></div></div>
+        <div class="product-card skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w80"></div><div class="skeleton-line w50"></div></div></div>
+        <div class="product-card skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w75"></div><div class="skeleton-line w55"></div><div class="skeleton-line w85"></div></div></div>
         {% endfor %}
       </div>
       <div class="catalog-cta">
-        <a href="{{ meta.wb_url }}" target="_blank" class="btn btn-wb">
-          <span class="wb-badge">WB</span> Наш магазин на WB
-        </a>
-        <a href="#catalog" class="btn btn-dark">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          В каталог
-        </a>
+        <a href="{{ meta.wb_url }}" target="_blank" class="btn btn-wb"></a>
+        <a href="{{ url_for('catalog') }}" class="btn btn-img"></a>
       </div>
     </div>
   </section>
@@ -239,9 +139,8 @@
         <div class="contact-card form-card" id="faq">
           <div class="contact-logo form-bg">✉</div>
           <h3>Оставить заявку</h3>
-          <p>Ответим на любые вопросы. Минимальный размер заказа от 500 г. Свяжемся в ближайшее время.</p>
+          <p>Ответим на любые вопросы. Минимальный размер заказа от 500 г.</p>
 
-          {# Flash-сообщения после отправки формы #}
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
               {% for category, message in messages %}
@@ -258,7 +157,6 @@
             <div class="contact-method">
               <p class="contact-method__label">Способ связи с вами</p>
               <div class="radio-group">
-
                 <label class="radio-item">
                   <input type="radio" name="contact_method" value="phone" id="cm-phone" />
                   <span class="radio-custom"></span>
@@ -268,25 +166,21 @@
                   <input type="datetime-local" name="call_time" class="cm-extra__input" />
                   <span class="cm-extra__hint">Удобные дата и время для звонка</span>
                 </div>
-
                 <label class="radio-item">
                   <input type="radio" name="contact_method" value="email" id="cm-email" />
                   <span class="radio-custom"></span>
                   <span class="radio-text">Почта</span>
                 </label>
-
                 <label class="radio-item">
                   <input type="radio" name="contact_method" value="vk" id="cm-vk" />
                   <span class="radio-custom"></span>
                   <span class="radio-text">ВКонтакте</span>
                 </label>
-
                 <label class="radio-item">
                   <input type="radio" name="contact_method" value="max" id="cm-max" />
                   <span class="radio-custom"></span>
                   <span class="radio-text">МАКС</span>
                 </label>
-
               </div>
             </div>
 
@@ -299,40 +193,24 @@
     </div>
   </section>
 
-  <!-- ════════════ FOOTER ════════════ -->
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="footer-logo">{{ meta.logo_text }}</span>
-        <p>Натуральный вкус выдержки.<br>Дубовая щепа и кубик с Кавказа.</p>
-      </div>
-      <nav class="footer-nav">
-        {% for link in nav_links %}
-        <a href="{{ link.href }}">{{ link.label }}</a>
-        {% endfor %}
-      </nav>
-      <p class="footer-copy">© 2024 Robserg. Все права защищены.</p>
-    </div>
-  </footer>
+{% endblock %}
 
-
-  <script>
-    // Показывать поле даты/времени только при выборе «Позвонить»
-    const radios = document.querySelectorAll('input[name="contact_method"]');
-    const phoneExtra = document.getElementById('cm-phone-extra');
-
-    radios.forEach(radio => {
-      radio.addEventListener('change', () => {
-        if (radio.value === 'phone' && radio.checked) {
-          phoneExtra.classList.add('visible');
-          phoneExtra.querySelector('input').required = true;
-        } else {
-          phoneExtra.classList.remove('visible');
-          phoneExtra.querySelector('input').required = false;
-          phoneExtra.querySelector('input').value = '';
-        }
-      });
+{% block scripts %}
+<script>
+  // Показывать поле даты/времени только при выборе «Позвонить»
+  const radios = document.querySelectorAll('input[name="contact_method"]');
+  const phoneExtra = document.getElementById('cm-phone-extra');
+  radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.value === 'phone' && radio.checked) {
+        phoneExtra.classList.add('visible');
+        phoneExtra.querySelector('input').required = true;
+      } else {
+        phoneExtra.classList.remove('visible');
+        phoneExtra.querySelector('input').required = false;
+        phoneExtra.querySelector('input').value = '';
+      }
     });
-  </script>
-</body>
-</html>
+  });
+</script>
+{% endblock %}

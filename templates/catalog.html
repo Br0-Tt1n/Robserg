@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог — {{ meta.title }}{% endblock %}
+
+{% block content %}
+
+  <!-- ════════════ HERO КАТАЛОГА ════════════ -->
+  <section class="cat-hero">
+    <div class="cat-hero-bg">
+      <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Каталог дубовой щепы" />
+    </div>
+    <div class="cat-hero-overlay"></div>
+    <div class="cat-hero-content container">
+      <div class="cat-hero-text">
+        <nav class="cat-breadcrumb">
+          <a href="{{ url_for('index') }}">Главная</a>
+          <span>/</span>
+          <span>Каталог</span>
+        </nav>
+        <h1 class="cat-hero-title">Каталог</h1>
+        <p class="cat-hero-sub">Натуральная дубовая щепа для насыщенного<br>вкуса и аромата ваших напитков.</p>
+      </div>
+
+      <!-- Логотип в hero (перетекает в хедер при скролле) -->
+      <div class="hero-logo-wrap">
+        <a href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='images/Logo.png') }}"
+               alt="{{ meta.logo_text }}"
+               class="hero-logo-img" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ КАТАЛОГ: сортировка + сетка ════════════ -->
+  <section class="catalog-page">
+    <div class="container">
+
+      <!-- Тулбар: счётчик + сортировка + вид -->
+      <div class="cat-toolbar">
+        <span class="cat-count">Найдено товаров: <b>{{ products | length }}</b></span>
+        <div class="cat-toolbar-right">
+          <div class="cat-sort">
+            <label for="sort-select">Сортировать:</label>
+            <select id="sort-select" class="cat-select" onchange="sortProducts(this.value)">
+              <option value="popular">Популярные</option>
+              <option value="price_asc">Цена ↑</option>
+              <option value="price_desc">Цена ↓</option>
+              <option value="name">По названию</option>
+            </select>
+          </div>
+          <div class="cat-view-toggle">
+            <button class="view-btn active" id="btn-grid" onclick="setView('grid')" aria-label="Сетка">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </button>
+            <button class="view-btn" id="btn-list" onclick="setView('list')" aria-label="Список">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Сетка товаров -->
+      <div class="cat-grid" id="products-grid">
+        {% for product in products %}
+        <div class="cat-card"
+             data-price="{{ product.price }}"
+             data-name="{{ product.name }}">
+
+          <div class="cat-card-img">
+            <img src="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}"
+                 alt="{{ product.name }}"
+                 loading="lazy">
+            {% if product.badge %}
+            <span class="cat-badge">{{ product.badge }}</span>
+            {% endif %}
+          </div>
+
+          <div class="cat-card-body">
+            <h3 class="cat-card-name">{{ product.name }}</h3>
+            <p class="cat-card-desc">{{ product.description }}</p>
+            <p class="cat-card-weight">{{ product.weight | default('100 г') }}</p>
+            <div class="cat-card-footer">
+              <span class="cat-card-price">{{ product.price }} ₽</span>
+              <button class="cat-cart-btn" aria-label="Добавить в корзину">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <!-- Пустой каталог -->
+        <div class="cat-empty">
+          <p>Товары не найдены. Попробуйте сбросить фильтры.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Кнопка "Показать ещё" — скрыть если товаров мало -->
+      {% if products | length > 8 %}
+      <div class="cat-load-more">
+        <button class="btn btn-outline-gold" onclick="loadMore()">
+          Показать ещё
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
+        </button>
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <!-- ════════════ ПРЕИМУЩЕСТВА (подвал каталога) ════════════ -->
+  <section class="cat-features">
+    <div class="container cat-features-grid">
+      <div class="cat-feature">
+        <div class="cat-feature-icon">🌿</div>
+        <div>
+          <h4>Натуральный продукт</h4>
+          <p>Без добавок и химии — только отборный дуб.</p>
+        </div>
+      </div>
+      <div class="cat-feature">
+        <div class="cat-feature-icon">✅</div>
+        <div>
+          <h4>Контроль качества</h4>
+          <p>Собственное производство и строгий отбор сырья.</p>
+        </div>
+      </div>
+      <div class="cat-feature">
+        <div class="cat-feature-icon">🚚</div>
+        <div>
+          <h4>Быстрая доставка</h4>
+          <p>Отправляем заказы по всей России.</p>
+        </div>
+      </div>
+      <div class="cat-feature">
+        <div class="cat-feature-icon">💬</div>
+        <div>
+          <h4>Поддержка</h4>
+          <p>Ответим на ваши вопросы в любое время.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block head %}
+<script>
+  // ── Переключение вида: сетка / список ──
+  function setView(mode) {
+    const grid = document.getElementById('products-grid');
+    const btnGrid = document.getElementById('btn-grid');
+    const btnList = document.getElementById('btn-list');
+    if (mode === 'list') {
+      grid.classList.add('cat-grid--list');
+      btnList.classList.add('active');
+      btnGrid.classList.remove('active');
+    } else {
+      grid.classList.remove('cat-grid--list');
+      btnGrid.classList.add('active');
+      btnList.classList.remove('active');
+    }
+  }
+
+  // ── Сортировка карточек ──
+  function sortProducts(value) {
+    const grid = document.getElementById('products-grid');
+    const cards = Array.from(grid.querySelectorAll('.cat-card'));
+    cards.sort((a, b) => {
+      if (value === 'price_asc')  return +a.dataset.price - +b.dataset.price;
+      if (value === 'price_desc') return +b.dataset.price - +a.dataset.price;
+      if (value === 'name')       return a.dataset.name.localeCompare(b.dataset.name, 'ru');
+      return 0; // popular — исходный порядок
+    });
+    cards.forEach(c => grid.appendChild(c));
+  }
+
+  // ── Показать ещё (простая клиентская пагинация) ──
+  const PAGE_SIZE = 8;
+  let shown = PAGE_SIZE;
+  function loadMore() {
+    const cards = document.querySelectorAll('.cat-card');
+    for (let i = shown; i < Math.min(shown + PAGE_SIZE, cards.length); i++) {
+      cards[i].style.display = '';
+    }
+    shown += PAGE_SIZE;
+    if (shown >= cards.length) {
+      document.querySelector('.cat-load-more').style.display = 'none';
+    }
+  }
+
+  // Скрываем карточки сверх PAGE_SIZE при загрузке
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.cat-card');
+    cards.forEach((c, i) => { if (i >= PAGE_SIZE) c.style.display = 'none'; });
+    if (cards.length <= PAGE_SIZE) {
+      const btn = document.querySelector('.cat-load-more');
+      if (btn) btn.style.display = 'none';
+    }
+  });
+</script>
+{% endblock %}
