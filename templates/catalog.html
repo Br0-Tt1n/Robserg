@@ -4,158 +4,163 @@
 
 {% block content %}
 
-  <!-- ════════════ HERO КАТАЛОГА ════════════ -->
-  <section class="cat-hero">
-    <div class="cat-hero-bg">
-      <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Каталог дубовой щепы" />
+<!-- ════════════ HERO КАТАЛОГА ════════════ -->
+<section class="cat-hero">
+  <div class="cat-hero-bg">
+    <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Каталог дубовой щепы" />
+  </div>
+  <div class="cat-hero-overlay"></div>
+  <div class="cat-hero-content container">
+    <div class="cat-hero-text">
+      <nav class="cat-breadcrumb">
+        <a href="{{ url_for('index') }}">Главная</a>
+        <span>/</span>
+        <span>Каталог</span>
+      </nav>
+      <h1 class="cat-hero-title">Каталог</h1>
+      <p class="cat-hero-sub">Натуральная дубовая щепа для насыщенного<br>вкуса и аромата ваших напитков.</p>
     </div>
-    <div class="cat-hero-overlay"></div>
-    <div class="cat-hero-content container">
-      <div class="cat-hero-text">
-        <nav class="cat-breadcrumb">
-          <a href="{{ url_for('index') }}">Главная</a>
-          <span>/</span>
-          <span>Каталог</span>
-        </nav>
-        <h1 class="cat-hero-title">Каталог</h1>
-        <p class="cat-hero-sub">Натуральная дубовая щепа для насыщенного<br>вкуса и аромата ваших напитков.</p>
-      </div>
-
-      <!-- Логотип в hero (перетекает в хедер при скролле) -->
-      <div class="hero-logo-wrap">
-        <a href="{{ url_for('index') }}">
-          <img src="{{ url_for('static', filename='images/Logo.png') }}"
-               alt="{{ meta.logo_text }}"
-               class="hero-logo-img" />
-        </a>
-      </div>
+    <div class="hero-logo-wrap">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/Logo.png') }}"
+             alt="{{ meta.logo_text }}"
+             class="hero-logo-img" />
+      </a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ════════════ КАТАЛОГ: сортировка + сетка ════════════ -->
-  <section class="catalog-page">
-    <div class="container">
+<!-- ════════════ ОСНОВНАЯ СЕКЦИЯ ════════════ -->
+<section class="catalog-page">
+  <div class="container">
+    <div class="cat-layout">
 
-      <!-- Тулбар: счётчик + сортировка + вид -->
-      <div class="cat-toolbar">
-        <span class="cat-count">Найдено товаров: <b>{{ products | length }}</b></span>
-        <div class="cat-toolbar-right">
-          <div class="cat-sort">
-            <label for="sort-select">Сортировать:</label>
-            <select id="sort-select" class="cat-select" onchange="sortProducts(this.value)">
-              <option value="popular">Популярные</option>
-              <option value="price_asc">Цена ↑</option>
-              <option value="price_desc">Цена ↓</option>
-              <option value="name">По названию</option>
-            </select>
-          </div>
-          <div class="cat-view-toggle">
-            <button class="view-btn active" id="btn-grid" onclick="setView('grid')" aria-label="Сетка">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <!-- ── ЛЕВАЯ ПАНЕЛЬ: ФИЛЬТРЫ ── -->
+      <aside class="cat-sidebar">
+
+        <div class="cat-sidebar-block">
+          <h3 class="cat-sidebar-title">Фильтр</h3>
+        </div>
+
+        <div class="cat-sidebar-block">
+          <div class="cat-filter-group">
+            <button class="cat-filter-header" onclick="toggleFilter('type')">
+              <span>Тип</span>
+              <svg class="cat-filter-arrow" id="type-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
             </button>
-            <button class="view-btn" id="btn-list" onclick="setView('list')" aria-label="Список">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </button>
+            <div class="cat-filter-body" id="type-body">
+              <label class="cat-checkbox">
+                <input type="checkbox" name="type" value="schepa" checked onchange="filterProducts()" />
+                <span class="cat-checkbox-custom"></span>
+                <span class="cat-checkbox-label">Щепа</span>
+              </label>
+              <label class="cat-checkbox">
+                <input type="checkbox" name="type" value="kubik" onchange="filterProducts()" />
+                <span class="cat-checkbox-custom"></span>
+                <span class="cat-checkbox-label">Кубик</span>
+              </label>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Сетка товаров -->
-      <div class="cat-grid" id="products-grid">
-        {% for product in products %}
-        <div class="cat-card"
-             data-price="{{ product.price }}"
-             data-name="{{ product.name }}">
+        <div class="cat-sidebar-block">
+          <button class="cat-reset-btn" onclick="resetFilters()">
+            Сбросить фильтр
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+        </div>
 
-          <div class="cat-card-img">
-            <img src="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}"
-                 alt="{{ product.name }}"
-                 loading="lazy">
-            {% if product.badge %}
-            <span class="cat-badge">{{ product.badge }}</span>
-            {% endif %}
-          </div>
+        <div class="cat-sidebar-block cat-sidebar-info">
+          <h4 class="cat-info-title">Полезная информация</h4>
+          <ul class="cat-info-list">
+            <li><a href="#">Часто задаваемые вопросы <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="#">Какую щепу выбрать? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="#">Как настаивать напиток<br>на щепе? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="#">Влияние фракции щепы<br>на вкус напитка <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="#">Как хранить щепу? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+            <li><a href="#">И другие вопросы <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          </ul>
+        </div>
 
-          <div class="cat-card-body">
-            <h3 class="cat-card-name">{{ product.name }}</h3>
-            <p class="cat-card-desc">{{ product.description }}</p>
-            <p class="cat-card-weight">{{ product.weight | default('100 г') }}</p>
-            <div class="cat-card-footer">
-              <span class="cat-card-price">{{ product.price }} ₽</span>
-              <button class="cat-cart-btn" aria-label="Добавить в корзину">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                  <line x1="3" y1="6" x2="21" y2="6"/>
-                  <path d="M16 10a4 4 0 0 1-8 0"/>
-                </svg>
+      </aside>
+
+      <!-- ── ПРАВАЯ ЧАСТЬ: ТОВАРЫ ── -->
+      <div class="cat-main">
+
+        <!-- Тулбар -->
+        <div class="cat-toolbar">
+          <p class="cat-count"><b id="products-count">{{ products | length }}</b> товаров</p>
+          <div class="cat-toolbar-right">
+            <div class="cat-sort">
+              <span>Сортировать:</span>
+              <select class="cat-select" id="sort-select" onchange="sortProducts()">
+                <option value="popular">Популярные</option>
+                <option value="price-asc">Цена: по возрастанию</option>
+                <option value="price-desc">Цена: по убыванию</option>
+                <option value="name">По названию</option>
+              </select>
+            </div>
+            <div class="cat-view-toggle">
+              <button class="view-btn active" id="view-grid" onclick="setView('grid')" aria-label="Сетка">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              </button>
+              <button class="view-btn" id="view-list" onclick="setView('list')" aria-label="Список">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
               </button>
             </div>
           </div>
         </div>
-        {% else %}
-        <!-- Пустой каталог -->
-        <div class="cat-empty">
-          <p>Товары не найдены. Попробуйте сбросить фильтры.</p>
-        </div>
-        {% endfor %}
-      </div>
 
-      <!-- Кнопка "Показать ещё" — скрыть если товаров мало -->
-      {% if products | length > 8 %}
-      <div class="cat-load-more">
-        <button class="btn btn-outline-gold" onclick="loadMore()">
-          Показать ещё
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
-        </button>
-      </div>
-      {% endif %}
+        <!-- Сетка товаров -->
+        <div class="cat-grid" id="cat-grid">
+          {% for product in products %}
+          <div class="cat-card" data-id="{{ product.id }}" data-price="{{ product.price }}" data-name="{{ product.name }}" data-badge="{{ product.badge or '' }}">
+            <div class="cat-card-img">
+              <img src="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}" alt="{{ product.name }}" loading="lazy" />
+              {% if product.badge %}
+              <span class="cat-badge">{{ product.badge }}</span>
+              {% endif %}
+            </div>
+            <div class="cat-card-body">
+              <h3 class="cat-card-name">{{ product.name }}</h3>
+              <p class="cat-card-desc">{{ product.description }}</p>
+              <p class="cat-card-weight">{{ product.weight }}</p>
+              <div class="cat-card-footer">
+                <span class="cat-card-price">{{ product.price }} ₽</span>
+                <button class="cat-cart-btn" aria-label="В корзину">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="cat-empty">Товары не найдены.</div>
+          {% endfor %}
+        </div>
 
-    </div>
-  </section>
+        <!-- Кнопка "Показать ещё" -->
+        <div class="cat-load-more">
+          <button class="btn btn-dark" id="load-more-btn" onclick="loadMore()">
+            Показать ещё
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+        </div>
 
-  <!-- ════════════ ПРЕИМУЩЕСТВА (подвал каталога) ════════════ -->
-  <section class="cat-features">
-    <div class="container cat-features-grid">
-      <div class="cat-feature">
-        <div class="cat-feature-icon">🌿</div>
-        <div>
-          <h4>Натуральный продукт</h4>
-          <p>Без добавок и химии — только отборный дуб.</p>
-        </div>
-      </div>
-      <div class="cat-feature">
-        <div class="cat-feature-icon">✅</div>
-        <div>
-          <h4>Контроль качества</h4>
-          <p>Собственное производство и строгий отбор сырья.</p>
-        </div>
-      </div>
-      <div class="cat-feature">
-        <div class="cat-feature-icon">🚚</div>
-        <div>
-          <h4>Быстрая доставка</h4>
-          <p>Отправляем заказы по всей России.</p>
-        </div>
-      </div>
-      <div class="cat-feature">
-        <div class="cat-feature-icon">💬</div>
-        <div>
-          <h4>Поддержка</h4>
-          <p>Ответим на ваши вопросы в любое время.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </div><!-- /cat-main -->
+    </div><!-- /cat-layout -->
+  </div>
+</section>
+
 
 {% endblock %}
 
-{% block head %}
+{% block scripts %}
 <script>
-  // ── Переключение вида: сетка / список ──
+  // ── Переключение вида (сетка / список) ──
   function setView(mode) {
-    const grid = document.getElementById('products-grid');
-    const btnGrid = document.getElementById('btn-grid');
-    const btnList = document.getElementById('btn-list');
+    const grid = document.getElementById('cat-grid');
+    const btnGrid = document.getElementById('view-grid');
+    const btnList = document.getElementById('view-list');
     if (mode === 'list') {
       grid.classList.add('cat-grid--list');
       btnList.classList.add('active');
@@ -167,41 +172,55 @@
     }
   }
 
-  // ── Сортировка карточек ──
-  function sortProducts(value) {
-    const grid = document.getElementById('products-grid');
-    const cards = Array.from(grid.querySelectorAll('.cat-card'));
+  // ── Фильтрация (заглушка — можно расширить) ──
+  function filterProducts() {
+    const checked = [...document.querySelectorAll('input[name="type"]:checked')].map(i => i.value);
+    const cards = document.querySelectorAll('.cat-card');
+    let visible = 0;
+    cards.forEach(card => {
+      card.style.display = '';
+      visible++;
+    });
+    document.getElementById('products-count').textContent = visible;
+  }
+
+  function resetFilters() {
+    document.querySelectorAll('input[name="type"]').forEach(i => i.checked = false);
+    document.querySelectorAll('input[name="type"][value="schepa"]')[0].checked = true;
+    filterProducts();
+  }
+
+  // ── Сортировка ──
+  function sortProducts() {
+    const val = document.getElementById('sort-select').value;
+    const grid = document.getElementById('cat-grid');
+    const cards = [...grid.querySelectorAll('.cat-card')];
     cards.sort((a, b) => {
-      if (value === 'price_asc')  return +a.dataset.price - +b.dataset.price;
-      if (value === 'price_desc') return +b.dataset.price - +a.dataset.price;
-      if (value === 'name')       return a.dataset.name.localeCompare(b.dataset.name, 'ru');
-      return 0; // popular — исходный порядок
+      if (val === 'price-asc')  return +a.dataset.price - +b.dataset.price;
+      if (val === 'price-desc') return +b.dataset.price - +a.dataset.price;
+      if (val === 'name')       return a.dataset.name.localeCompare(b.dataset.name, 'ru');
+      return 0;
     });
     cards.forEach(c => grid.appendChild(c));
   }
 
-  // ── Показать ещё (простая клиентская пагинация) ──
-  const PAGE_SIZE = 8;
-  let shown = PAGE_SIZE;
+  // ── Показать ещё (заглушка) ──
   function loadMore() {
-    const cards = document.querySelectorAll('.cat-card');
-    for (let i = shown; i < Math.min(shown + PAGE_SIZE, cards.length); i++) {
-      cards[i].style.display = '';
-    }
-    shown += PAGE_SIZE;
-    if (shown >= cards.length) {
-      document.querySelector('.cat-load-more').style.display = 'none';
-    }
+    const btn = document.getElementById('load-more-btn');
+    btn.textContent = 'Загрузка...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.innerHTML = 'Все товары загружены';
+      btn.disabled = true;
+    }, 800);
   }
 
-  // Скрываем карточки сверх PAGE_SIZE при загрузке
-  document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.cat-card');
-    cards.forEach((c, i) => { if (i >= PAGE_SIZE) c.style.display = 'none'; });
-    if (cards.length <= PAGE_SIZE) {
-      const btn = document.querySelector('.cat-load-more');
-      if (btn) btn.style.display = 'none';
-    }
-  });
+  // ── Раскрытие фильтра ──
+  function toggleFilter(id) {
+    const body  = document.getElementById(id + '-body');
+    const arrow = document.getElementById(id + '-arrow');
+    body.classList.toggle('collapsed');
+    arrow.classList.toggle('rotated');
+  }
 </script>
 {% endblock %}

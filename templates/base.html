@@ -42,11 +42,11 @@
       </a>
     </nav>
     <div class="mobile-drawer-footer">
-      <div class="footer-socials">
-        <a href="{{ meta.wb_url }}" target="_blank">WB</a>
-        <a href="{{ meta.vk_url }}" target="_blank">VK</a>
-        <a href="{{ meta.max_url }}" target="_blank">MAX</a>
-      </div>
+        <div class="footer-socials">
+            <a href="{{ meta.wb_url }}" target="_blank"><img src="{{ url_for('static', filename='icons/TG.png') }}" alt="WB" class="social-icon-img" /></a>
+            <a href="{{ meta.vk_url }}" target="_blank"><img src="{{ url_for('static', filename='icons/VK.png') }}" alt="VK" class="social-icon-img" /></a>
+            <a href="{{ meta.max_url }}" target="_blank"><img src="{{ url_for('static', filename='icons/MAX.png') }}" alt="MAX" class="social-icon-img" /></a>
+          </div>
     </div>
   </aside>
 
@@ -106,9 +106,9 @@
           <div class="footer-logo">{{ meta.logo_text }}</div>
           <p>Производитель дубовой щепы премиального качества с кавказским характером. Натуральный вкус выдержки в каждой щепе.</p>
           <div class="footer-socials">
-            <a href="{{ meta.wb_url }}" target="_blank">WB</a>
-            <a href="{{ meta.vk_url }}" target="_blank">VK</a>
-            <a href="{{ meta.max_url }}" target="_blank">MAX</a>
+            <a href="{{ meta.wb_url }}" target="_blank"><img src="{{ url_for('static', filename='icons/WB.png') }}" alt="WB" class="social-icon-img" /></a>
+            <a href="{{ meta.vk_url }}" target="_blank"><img src="{{ url_for('static', filename='icons/VK.png') }}" alt="VK" class="social-icon-img" /></a>
+            <a href="{{ meta.max_url }}" target="_blank"><img src="{{ url_for('static', filename='icons/MAX.png') }}" alt="MAX" class="social-icon-img" /></a>
           </div>
         </div>
         <div class="footer-col">
@@ -137,15 +137,15 @@
         <div class="footer-contacts">
           <h4>Контакты</h4>
           <div class="footer-contact">
-            <span>📞</span>
+            <span><img src="{{ url_for('static', filename='icons/teleofnBasement.png') }}" alt="" class="footer-contact-icon" /></span>
             <p>+7 (999) 123-45-67<br>Пн–Пт: 9:00 — 18:00</p>
           </div>
           <div class="footer-contact">
-            <span>✉</span>
+            <span><img src="{{ url_for('static', filename='icons/POCHTA.png') }}" alt="" class="footer-contact-icon" /></span>
             <p>Robserg.01@yandex.ru</p>
           </div>
           <div class="footer-contact">
-            <span>📍</span>
+            <span><img src="{{ url_for('static', filename='icons/basementMap.png') }}" alt="" class="footer-contact-icon" /></span>
             <p>Россия, Адыгея<br>г.Майкоп</p>
           </div>
           <a href="{{ url_for('index') }}#faq" class="footer-btn">Остались вопросы?</a>
@@ -154,19 +154,19 @@
 
       <div class="footer-features">
         <div class="footer-feature">
-          <div class="footer-feature-icon">🍃</div>
+          <div class="footer-feature-icon"><img src="{{ url_for('static', filename='icons/leafBasementNOICO.png') }}" alt="" class="feature-icon-img" /></div>
           <div><h5>100% натурально</h5><p>Только отборная древесина без химии и пропиток</p></div>
         </div>
         <div class="footer-feature">
-          <div class="footer-feature-icon">🛡</div>
+          <div class="footer-feature-icon"><img src="{{ url_for('static', filename='icons/BasementProtection.png') }}" alt="" class="feature-icon-img" /></div>
           <div><h5>Контроль качества</h5><p>Многоступенчатая проверка на всех этапах производства</p></div>
         </div>
         <div class="footer-feature">
-          <div class="footer-feature-icon">🛢</div>
+          <div class="footer-feature-icon"><img src="{{ url_for('static', filename='icons/barrelСellar.png') }}" alt="" class="feature-icon-img" /></div>
           <div><h5>Глубокий вкус</h5><p>Идеально для домашней выдержки напитков</p></div>
         </div>
         <div class="footer-feature">
-          <div class="footer-feature-icon">🚚</div>
+          <div class="footer-feature-icon"><img src="{{ url_for('static', filename='icons/carBasement.png') }}" alt="" class="feature-icon-img" /></div>
           <div><h5>Быстрая доставка</h5><p>Отправляем заказы по всей России</p></div>
         </div>
       </div>

@@ -16,7 +16,7 @@ PRODUCTS = [
         "price": 350,
         "weight": "100 г",          # ДОБАВЛЕНО
         "badge": "Хит",
-        "image_url": "images/V1.png",
+        "image_url": "images/WoodChipsLow.png",
     },
     {
         "id": 2,
@@ -25,7 +25,7 @@ PRODUCTS = [
         "price": 390,
         "weight": "100 г",          # ДОБАВЛЕНО
         "badge": "Топ продаж",
-        "image_url": "images/V2.png",
+        "image_url": "images/WoodChips.png",
     },
     {
         "id": 3,
@@ -34,7 +34,7 @@ PRODUCTS = [
         "price": 420,
         "weight": "100 г",          # ДОБАВЛЕНО
         "badge": None,
-        "image_url": "images/woodChipsTRvar.png",
+        "image_url": "images/Cube.png",
     },
     {
         "id": 4,
@@ -43,7 +43,7 @@ PRODUCTS = [
         "price": 480,
         "weight": "100 г",          # ДОБАВЛЕНО
         "badge": "Новинка",
-        "image_url": "images/V1.png",
+        "image_url": "images/CubeMedium.png",
     },
 ]
 
@@ -133,4 +133,4 @@ def submit():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run()

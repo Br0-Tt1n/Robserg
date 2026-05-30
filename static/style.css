@@ -183,6 +183,7 @@ ul { list-style: none; }
 .header-icons { display: flex; gap: 4px; }
 .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid transparent; border-radius: var(--radius); color: var(--clr-text-muted); cursor: pointer; transition: var(--transition); }
 .icon-btn:hover { color: var(--clr-gold-light); border-color: rgba(201,150,58,0.3); }
+.icon-img { width: 18px; height: 18px; object-fit: contain; }
 
 /* ─── HERO ──────────────────────────────────────────────── */
 .hero { position: relative; min-height: 82vh; display: flex; align-items: flex-end; overflow: hidden; }
@@ -389,6 +390,7 @@ ul { list-style: none; }
   align-items: stretch;
 }
 .contact-logo { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: white; flex-shrink: 0; }
+.contact-logo-img { width: 36px; height: 36px; object-fit: contain; }
 .wb-bg  { background: var(--clr-wb); }
 .vk-bg  { background: var(--clr-vk); }
 .form-bg { background: linear-gradient(135deg, var(--clr-gold), var(--clr-amber)); font-size: 22px; }
@@ -477,6 +479,8 @@ ul { list-style: none; }
   background:rgba(201,150,58,.05);
 }
 
+.social-icon-img { width: 48px; height: 48px; object-fit: contain; }
+
 /* ───────── COLUMNS ───────── */
 
 .footer-col,
@@ -521,10 +525,15 @@ ul { list-style: none; }
 }
 
 .footer-contact span{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   color:#d89b3d;
   margin-top:2px;
   font-size:15px;
 }
+
+.footer-contact-icon { width: 56px; height: 56px; object-fit: contain; }
 
 .footer-btn{
   margin-top:10px;
@@ -563,7 +572,7 @@ ul { list-style: none; }
   align-items:flex-start;
   gap:18px;
   border-right:1px solid rgba(201,150,58,.06);
-  min-height:154px;
+  min-height:180px;
 }
 
 .footer-feature:last-child{
@@ -571,10 +580,14 @@ ul { list-style: none; }
 }
 
 .footer-feature-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-size:60px;
   color:#d89b3d;
-  margin-top:6%;
 }
+
+.feature-icon-img { width: 140px; height: 140px; object-fit: contain; }
 
 .footer-feature h5{
   color:#f1dcc0;
@@ -1417,3 +1430,293 @@ ul { list-style: none; }
   border-top: 1px solid rgba(201,150,58,0.12);
   flex-shrink: 0;
 }
+
+
+/* Отдельный CSS для страницы каталога */
+/* ─── LAYOUT: сайдбар + основная область ────────────────── */
+.cat-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+ 
+/* ─── САЙДБАР ───────────────────────────────────────────── */
+.cat-sidebar {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(201,150,58,0.15);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: sticky;
+  top: 80px;   /* ниже sticky-хедера */
+}
+ 
+.cat-sidebar-block {
+  padding: 20px 20px;
+  border-bottom: 1px solid rgba(201,150,58,0.10);
+}
+.cat-sidebar-block:last-child {
+  border-bottom: none;
+}
+ 
+.cat-sidebar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--clr-gold-pale);
+}
+ 
+/* ── Группа фильтра (Тип) ── */
+.cat-filter-group {}
+ 
+.cat-filter-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 14px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--clr-gold-light);
+}
+ 
+.cat-filter-arrow {
+  transition: transform 0.25s ease;
+  color: var(--clr-gold);
+}
+.cat-filter-arrow.rotated {
+  transform: rotate(180deg);
+}
+ 
+.cat-filter-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 200px;
+  opacity: 1;
+}
+.cat-filter-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+ 
+/* ── Кастомный чекбокс ── */
+.cat-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.cat-checkbox input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.cat-checkbox-custom {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid rgba(201,150,58,0.4);
+  background: transparent;
+  position: relative;
+  transition: var(--transition);
+}
+.cat-checkbox-custom::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 5px;
+  width: 5px; height: 9px;
+  border: 2px solid var(--clr-gold);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) scale(0);
+  opacity: 0;
+  transition: var(--transition);
+}
+.cat-checkbox input[type="checkbox"]:checked ~ .cat-checkbox-custom {
+  border-color: var(--clr-gold);
+  background: rgba(201,150,58,0.12);
+}
+.cat-checkbox input[type="checkbox"]:checked ~ .cat-checkbox-custom::after {
+  transform: rotate(45deg) scale(1);
+  opacity: 1;
+}
+.cat-checkbox-label {
+  font-size: 14px;
+  color: #c4a882;
+  transition: var(--transition);
+}
+.cat-checkbox:hover .cat-checkbox-label {
+  color: var(--clr-gold-light);
+}
+.cat-checkbox input[type="checkbox"]:checked ~ .cat-checkbox-label {
+  color: var(--clr-gold-light);
+  font-weight: 600;
+}
+ 
+/* ── Кнопка сброса ── */
+.cat-reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid rgba(201,150,58,0.25);
+  border-radius: var(--radius);
+  color: var(--clr-text-muted);
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  justify-content: center;
+}
+.cat-reset-btn:hover {
+  color: var(--clr-gold-light);
+  border-color: var(--clr-gold);
+  background: rgba(201,150,58,0.06);
+}
+.cat-reset-btn svg {
+  transition: transform 0.4s ease;
+}
+.cat-reset-btn:hover svg {
+  transform: rotate(-180deg);
+}
+ 
+/* ── Полезная информация ── */
+.cat-sidebar-info {
+  padding-top: 18px;
+}
+.cat-info-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--clr-gold-pale);
+  margin-bottom: 14px;
+}
+.cat-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cat-info-list li a {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 9px 10px;
+  font-size: 13px;
+  color: var(--clr-text-muted);
+  border-radius: 6px;
+  transition: var(--transition);
+  line-height: 1.4;
+}
+.cat-info-list li a svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: rgba(158,126,94,0.5);
+  transition: var(--transition);
+}
+.cat-info-list li a:hover {
+  color: var(--clr-gold-light);
+  background: rgba(201,150,58,0.07);
+}
+.cat-info-list li a:hover svg {
+  color: var(--clr-gold);
+  transform: translateX(2px);
+}
+ 
+/* ─── RESPONSIVE: сайдбар ───────────────────────────────── */
+@media (max-width: 900px) {
+  .cat-layout {
+    grid-template-columns: 1fr;
+  }
+  .cat-sidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .cat-sidebar-block:last-child {
+    border-bottom: 1px solid rgba(201,150,58,0.10);
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 600px) {
+  .cat-sidebar {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ─── СЕКЦИЯ КОНТАКТОВ: иконки логотипов (WB, VK, MAX, конверт) ── */
+.contact-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+ 
+.contact-logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+}
+ 
+/* ─── КАРТОЧКА КОНТАКТА: вертикальный стек ─────────────── */
+/* Было: gap между элементами работал нормально,
+   но иконки не выравнивались по верху */
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* убираем align-items: stretch чтобы иконка не растягивалась */
+  align-items: flex-start;
+}
+ 
+/* ─── ФУТЕР: иконки рядом с контактными данными ─────────── */
+/* Проблема: иконки 56×56 — слишком большой контейнер */
+.footer-contact {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+  color: #95785c;
+  font-size: 15px;
+  line-height: 1.9;
+}
+ 
+/* Контейнер иконки в футере */
+.footer-contact span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-top: 4px;
+}
+ 
+/* Сама иконка футера */
+.footer-contact-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
+ 
