@@ -114,7 +114,16 @@
         <!-- Сетка товаров -->
         <div class="cat-grid" id="cat-grid">
           {% for product in products %}
-          <div class="cat-card" data-id="{{ product.id }}" data-price="{{ product.price }}" data-name="{{ product.name }}" data-badge="{{ product.badge or '' }}">
+          <!-- Старая карточка товара <div class="cat-card" data-id="{{ product.id }}" data-price="{{ product.price }}" data-name="{{ product.name }}" data-badge="{{ product.badge or '' }}"> -->
+          <div class="cat-card" 
+            data-id="{{ product.id }}"
+            data-name="{{ product.name }}"
+            data-desc="{{ product.description }}"
+            data-price="{{ product.price }}"
+            data-weight="{{ product.weight }}"
+            data-badge="{{ product.badge or '' }}"
+            data-img="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}"
+            onclick="openModal(this)">
             <div class="cat-card-img">
               <img src="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}" alt="{{ product.name }}" loading="lazy" />
               {% if product.badge %}
@@ -123,7 +132,7 @@
             </div>
             <div class="cat-card-body">
               <h3 class="cat-card-name">{{ product.name }}</h3>
-              <p class="cat-card-desc">{{ product.description }}</p>
+              <p class="cat-card-desc">{{ product.description | truncate(77, True, '...') }}</p>
               <p class="cat-card-weight">{{ product.weight }}</p>
               <div class="cat-card-footer">
                 <span class="cat-card-price">{{ product.price }} ₽</span>
@@ -151,76 +160,224 @@
   </div>
 </section>
 
+<div class="product-modal-overlay" id="product-modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="product-modal" id="product-modal">
+    <button class="product-modal-close" onclick="closeModal()" aria-label="Закрыть">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="product-modal-img">
+      <img id="modal-img" src="" alt="" />
+    </div>
+    <div class="product-modal-info">
+      <span class="product-modal-badge" id="modal-badge"></span>
+      <h2 class="product-modal-name" id="modal-name"></h2>
+
+      <p class="product-modal-weight-label">Выберите вес</p>
+      <div class="weight-options" id="weight-options"></div>
+      <div class="product-modal-price-row">
+        <span class="product-modal-price" id="modal-price"></span>
+        <span class="product-modal-price-note" id="modal-price-note"></span>
+      </div>
+      <p class="product-modal-wholesale">Оптовая продажа — цена обговаривается индивидуально в зависимости от объема</p>
+
+      <p class="product-modal-desc-text" id="modal-desc" style="color: #e2ba8c;"></p>
+
+      <div class="product-modal-footer">
+        <a href="{{ url_for('index') }}#faq" class="product-modal-ask" onclick="closeModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Вопросы по товару
+        </a>
+        <button class="product-modal-cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          Добавить в корзину
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 
 {% block scripts %}
 <script>
-  // ── Переключение вида (сетка / список) ──
-  function setView(mode) {
-    const grid = document.getElementById('cat-grid');
-    const btnGrid = document.getElementById('view-grid');
-    const btnList = document.getElementById('view-list');
-    if (mode === 'list') {
-      grid.classList.add('cat-grid--list');
-      btnList.classList.add('active');
-      btnGrid.classList.remove('active');
-    } else {
-      grid.classList.remove('cat-grid--list');
-      btnGrid.classList.add('active');
-      btnList.classList.remove('active');
-    }
+
+// ─────────────────────────────────────────────
+// КОНФИГУРАЦИЯ ВЕС → КОЭФФИЦИЕНТ ЦЕНЫ
+// Чтобы изменить цены на другие веса — меняй multiplier ниже
+// ─────────────────────────────────────────────
+const WEIGHT_OPTIONS = [
+  { label: '500 гр.',  multiplier: 1.0 },
+  { label: '1000 гр.',  multiplier: 1.85 },  // ← меняй коэффициент здесь
+  { label: '2000 гр.',  multiplier: 4.2 },   // ← и здесь
+  { label: '5000 гр.', multiplier: 7.5 },   // ← и здесь
+];
+
+let currentBasePrice = 0;
+let currentWeight = WEIGHT_OPTIONS[0];
+
+// ── Открыть модал ──
+function openModal(el) {
+  const overlay = document.getElementById('product-modal-overlay');
+  
+  currentBasePrice = parseInt(el.dataset.price, 10);
+  currentWeight = WEIGHT_OPTIONS[0];
+
+  // Заполняем данные
+  document.getElementById('modal-img').src  = el.dataset.img;
+  document.getElementById('modal-img').alt  = el.dataset.name;
+  document.getElementById('modal-name').textContent  = el.dataset.name;
+  document.getElementById('modal-desc').textContent  = el.dataset.desc;
+
+  const badge = document.getElementById('modal-badge');
+  if (el.dataset.badge) {
+    badge.textContent = el.dataset.badge;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
   }
 
-  // ── Фильтрация (заглушка — можно расширить) ──
-  function filterProducts() {
-    const checked = [...document.querySelectorAll('input[name="type"]:checked')].map(i => i.value);
-    const cards = document.querySelectorAll('.cat-card');
-    let visible = 0;
-    cards.forEach(card => {
-      card.style.display = '';
-      visible++;
-    });
-    document.getElementById('products-count').textContent = visible;
-  }
+  // Кнопки веса
+  const weightContainer = document.getElementById('weight-options');
+  weightContainer.innerHTML = '';
+  WEIGHT_OPTIONS.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'weight-btn' + (i === 0 ? ' selected' : '');
+    btn.textContent = opt.label;
+    btn.onclick = () => selectWeight(opt, btn);
+    weightContainer.appendChild(btn);
+  });
 
-  function resetFilters() {
-    document.querySelectorAll('input[name="type"]').forEach(i => i.checked = false);
-    document.querySelectorAll('input[name="type"][value="schepa"]')[0].checked = true;
-    filterProducts();
-  }
+  updatePrice();
 
-  // ── Сортировка ──
-  function sortProducts() {
-    const val = document.getElementById('sort-select').value;
-    const grid = document.getElementById('cat-grid');
-    const cards = [...grid.querySelectorAll('.cat-card')];
-    cards.sort((a, b) => {
-      if (val === 'price-asc')  return +a.dataset.price - +b.dataset.price;
-      if (val === 'price-desc') return +b.dataset.price - +a.dataset.price;
-      if (val === 'name')       return a.dataset.name.localeCompare(b.dataset.name, 'ru');
-      return 0;
-    });
-    cards.forEach(c => grid.appendChild(c));
-  }
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
 
-  // ── Показать ещё (заглушка) ──
-  function loadMore() {
-    const btn = document.getElementById('load-more-btn');
-    btn.textContent = 'Загрузка...';
+  // Якорь в URL
+  const id = el.dataset.id;
+  history.replaceState(null, '', '#product-' + id);
+}
+
+// ── Выбор веса ──
+function selectWeight(opt, btn) {
+  currentWeight = opt;
+  document.querySelectorAll('.weight-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updatePrice();
+}
+
+// ── Обновить цену ──
+function updatePrice() {
+  const price = Math.round(currentBasePrice * currentWeight.multiplier);
+  document.getElementById('modal-price').textContent = price.toLocaleString('ru-RU') + ' ₽';
+  document.getElementById('modal-price-note').textContent = '/ ' + currentWeight.label;
+}
+
+// ── Закрыть модал ──
+function closeModal() {
+  document.getElementById('product-modal-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+  history.replaceState(null, '', window.location.pathname);
+}
+
+// ── Клик вне модала (только десктоп) ──
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('product-modal-overlay')) {
+    closeModal();
+  }
+}
+
+// ── Escape ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ── Автооткрытие по хешу из URL ──
+// Когда приходим с главной по ссылке /catalog#product-1
+function openModalByHash() {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#product-')) return;
+  const id = hash.replace('#product-', '');
+  const card = document.querySelector(`.cat-card[data-id="${id}"]`);
+  if (card) {
+    // Небольшая задержка чтобы страница успела отрисоваться
+    setTimeout(() => openModal(card), 300);
+  }
+}
+window.addEventListener('DOMContentLoaded', openModalByHash);
+
+// ── Переключение вида (сетка / список) ──
+function setView(mode) {
+  const grid = document.getElementById('cat-grid');
+  const btnGrid = document.getElementById('view-grid');
+  const btnList = document.getElementById('view-list');
+  if (mode === 'list') {
+    grid.classList.add('cat-grid--list');
+    btnList.classList.add('active');
+    btnGrid.classList.remove('active');
+  } else {
+    grid.classList.remove('cat-grid--list');
+    btnGrid.classList.add('active');
+    btnList.classList.remove('active');
+  }
+}
+
+// ── Фильтрация ──
+function filterProducts() {
+  const checked = [...document.querySelectorAll('input[name="type"]:checked')].map(i => i.value);
+  const cards = document.querySelectorAll('.cat-card');
+  let visible = 0;
+  cards.forEach(card => {
+    card.style.display = '';
+    visible++;
+  });
+  document.getElementById('products-count').textContent = visible;
+}
+
+function resetFilters() {
+  document.querySelectorAll('input[name="type"]').forEach(i => i.checked = false);
+  document.querySelectorAll('input[name="type"][value="schepa"]')[0].checked = true;
+  filterProducts();
+}
+
+// ── Сортировка ──
+function sortProducts() {
+  const val = document.getElementById('sort-select').value;
+  const grid = document.getElementById('cat-grid');
+  const cards = [...grid.querySelectorAll('.cat-card')];
+  cards.sort((a, b) => {
+    if (val === 'price-asc')  return +a.dataset.price - +b.dataset.price;
+    if (val === 'price-desc') return +b.dataset.price - +a.dataset.price;
+    if (val === 'name')       return a.dataset.name.localeCompare(b.dataset.name, 'ru');
+    return 0;
+  });
+  cards.forEach(c => grid.appendChild(c));
+}
+
+// ── Показать ещё ──
+function loadMore() {
+  const btn = document.getElementById('load-more-btn');
+  btn.textContent = 'Загрузка...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = 'Все товары загружены';
     btn.disabled = true;
-    setTimeout(() => {
-      btn.innerHTML = 'Все товары загружены';
-      btn.disabled = true;
-    }, 800);
-  }
+  }, 800);
+}
 
-  // ── Раскрытие фильтра ──
-  function toggleFilter(id) {
-    const body  = document.getElementById(id + '-body');
-    const arrow = document.getElementById(id + '-arrow');
-    body.classList.toggle('collapsed');
-    arrow.classList.toggle('rotated');
-  }
+// ── Раскрытие фильтра ──
+function toggleFilter(id) {
+  const body  = document.getElementById(id + '-body');
+  const arrow = document.getElementById(id + '-arrow');
+  body.classList.toggle('collapsed');
+  arrow.classList.toggle('rotated');
+}
 </script>
 {% endblock %}

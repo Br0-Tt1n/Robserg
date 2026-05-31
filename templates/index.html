@@ -63,12 +63,12 @@
     <div class="container">
       <h2 class="section-title centered">Наши Преимущества</h2>
       <div class="adv-grid">
-        <div class="adv-card"><div class="adv-icon">🌲</div><h4>Кавказский дуб</h4><p>Используем отборную древесину из экологически чистых регионов</p></div>
-        <div class="adv-card"><div class="adv-icon">🔥</div><h4>Контроль обжига</h4><p>Точные степени обжига для нужного вкуса и аромата</p></div>
-        <div class="adv-card"><div class="adv-icon">✅</div><h4>Стабильное качество</h4><p>Каждая партия проходит проверку перед отправкой</p></div>
-        <div class="adv-card"><div class="adv-icon">🪵</div><h4>Чистое сырьё</h4><p>Без коры, сучков, табачки и посторонних примесей</p></div>
-        <div class="adv-card"><div class="adv-icon">📦</div><h4>Удобная фракция</h4><p>Оптимальный размер щепы для равномерной ароматизации</p></div>
-        <div class="adv-card"><div class="adv-icon">🚚</div><h4>Быстрая доставка</h4><p>Оперативно отправляем заказы по всей стране</p></div>
+        <div class="adv-card"><div class="adv-icon"><img src="{{ url_for('static', filename='icons/dub.png') }}" alt=""></div><h4>Кавказский дуб</h4><p>Используем отборную древесину из экологически чистых регионов</p></div>
+        <div class="adv-card"><div class="adv-icon"><img src="{{ url_for('static', filename='icons/fire.png') }}" alt=""></div><h4>Контроль обжига</h4><p>Точные степени обжига для нужного вкуса и аромата</p></div>
+        <div class="adv-card"><div class="adv-icon"><img src="{{ url_for('static', filename='icons/Cachestvo.png') }}" alt=""></div><h4>Стабильное качество</h4><p>Каждая партия проходит проверку перед отправкой</p></div>
+        <div class="adv-card"><div class="adv-icon"><img src="{{ url_for('static', filename='icons/el.png') }}" alt=""></div><h4>Чистое сырьё</h4><p>Без коры, сучков, табачки и посторонних примесей</p></div>
+        <div class="adv-card"><div class="adv-icon"><img src="{{ url_for('static', filename='icons/korobka.png') }}" alt=""></div><h4>Удобная фракция</h4><p>Оптимальный размер щепы для равномерной ароматизации</p></div>
+        <div class="adv-card"><div class="adv-icon"><img src="{{ url_for('static', filename='icons/dostavka.png') }}" alt=""></div><h4>Быстрая доставка</h4><p>Оперативно отправляем заказы по всей стране</p></div>
       </div>
     </div>
   </section>
@@ -78,6 +78,8 @@
     <div class="container">
       <h2 class="section-title">Каталог продукции</h2>
       <div class="catalog-grid">
+
+        <!-- Первая версия каталога
         {% for product in products %}
         <div class="product-card">
           <div class="product-img-wrap">
@@ -88,7 +90,7 @@
           </div>
           <div class="product-body">
             <h3 class="product-name">{{ product.name }}</h3>
-            <p class="product-desc">{{ product.description }}</p>
+            <p class="product-desc">{{ product.description | truncate(55, True, '...') }}</p>
             <div class="product-footer">
               <span class="product-price">{{ product.price }} ₽</span>
               <button class="btn btn-sm btn-dark">В корзину</button>
@@ -101,6 +103,38 @@
         <div class="product-card skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w80"></div><div class="skeleton-line w50"></div></div></div>
         <div class="product-card skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w75"></div><div class="skeleton-line w55"></div><div class="skeleton-line w85"></div></div></div>
         {% endfor %}
+        Конец первой версии каталога -->
+
+        {% for product in products %}
+        <a href="{{ url_for('catalog') }}#product-{{ product.id }}" 
+        class="product-card"
+        data-id="{{ product.id }}"
+        data-name="{{ product.name }}"
+        data-desc="{{ product.description}}"
+        data-price="{{ product.price }}"
+        data-weight="{{ product.weight }}"
+        data-badge="{{ product.badge or '' }}"
+        data-img="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}"
+        onclick="openFromIndex(event, this)">
+        <div class="product-img-wrap">
+          <img src="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}" alt="{{ product.name }}">
+          {% if product.badge %}
+          <span class="product-badge">{{ product.badge }}</span>
+          {% endif %}
+        </div>
+        <div class="product-body">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-desc">{{ product.description | truncate(77, True, '...') }}</p>
+          <div class="product-footer">
+            <span class="product-price">{{ product.price }} ₽</span>
+            <button class="btn btn-sm btn-dark" onclick="event.preventDefault()">В корзину</button>
+          </div>
+        </div>
+        </a>
+        {% else %}
+        ...скелетоны без изменений...
+        {% endfor %}
+
       </div>
       <div class="catalog-cta">
         <a href="{{ meta.wb_url }}" target="_blank" class="btn btn-wb"></a>
@@ -116,30 +150,38 @@
       <div class="contacts-grid contacts-grid--4">
 
         <div class="contact-card">
-          <div class="contact-logo"><img src="{{ url_for('static', filename='icons/WB.png') }}" alt="WB" class="contact-logo-img" /></div>
-          <h3>Наш магазин на WB</h3>
+          <div class="contact-card-header">
+            <div class="contact-logo"><img src="{{ url_for('static', filename='icons/WB_2.png') }}" alt="WB" class="contact-logo-img" /></div>
+            <h3>Наш магазин на WB</h3>
+          </div>
           <p>Следите за акциями и новинками. Покупайте удобно с быстрой доставкой.</p>
           <a href="{{ meta.wb_url }}" target="_blank" class="btn btn-outline-gold">Перейти в магазин →</a>
         </div>
 
         <div class="contact-card">
-          <div class="contact-logo"><img src="{{ url_for('static', filename='icons/VK.png') }}" alt="VK" class="contact-logo-img" /></div>
-          <h3>Мы ВКонтакте</h3>
+          <div class="contact-card-header">
+            <div class="contact-logo"><img src="{{ url_for('static', filename='icons/VK_2.png') }}" alt="VK" class="contact-logo-img" /></div>
+            <h3>Мы ВКонтакте</h3>
+          </div>
           <p>Следите за новостями и получайте полезные советы по использованию.</p>
           <a href="{{ meta.vk_url }}" target="_blank" class="btn btn-outline-gold">Перейти в VK →</a>
         </div>
 
         <div class="contact-card">
-          <div class="contact-logo"><img src="{{ url_for('static', filename='icons/MAX.png') }}" alt="MAX" class="contact-logo-img" /></div>
-          <h3>Мы в МАКС</h3>
+          <div class="contact-card-header">
+            <div class="contact-logo"><img src="{{ url_for('static', filename='icons/MAX_2.png') }}" alt="MAX" class="contact-logo-img" /></div>
+            <h3>Мы в МАКС</h3>
+          </div>
           <p>Пишите нам в мессенджере МАКС — отвечаем быстро и удобно.</p>
           <a href="{{ meta.max_url }}" target="_blank" class="btn btn-outline-gold">Написать в МАКС →</a>
         </div>
 
         <div class="contact-card form-card" id="faq">
-          <div class="contact-logo"><img src="{{ url_for('static', filename='icons/POCHTA.png') }}" alt="Заявка" class="contact-logo-img" /></div>
-          <h3>Оставить заявку</h3>
-          <p>Ответим на любые вопросы. Минимальный размер заказа от 500 г.</p>
+          <div class="contact-card-header">
+            <div class="contact-logo"><img src="{{ url_for('static', filename='icons/Pochta_2.png') }}" alt="Заявка" class="contact-logo-img" /></div>
+            <h3>Оставить заявку</h3>
+          </div>
+          <p>Ответим на любые вопросы. Минимальный размер заказа от 500 гр.</p>
 
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -197,6 +239,12 @@
 
 {% block scripts %}
 <script>
+  // функция для передачи данных о товаре при клике на карточку в каталоге на главной странице
+  function openFromIndex(e, el) {
+  // Переходим на каталог с хешем товара
+  // JS не мешает переходу, модал откроется на catalog.html
+  }
+
   // Показывать поле даты/времени только при выборе «Позвонить»
   const radios = document.querySelectorAll('input[name="contact_method"]');
   const phoneExtra = document.getElementById('cm-phone-extra');
