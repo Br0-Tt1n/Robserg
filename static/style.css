@@ -1466,8 +1466,6 @@ ul { list-style: none; }
   color: var(--clr-gold-pale);
 }
  
-/* ── Группа фильтра (Тип) ── */
-.cat-filter-group {}
  
 .cat-filter-header {
   width: 100%;
@@ -2023,4 +2021,1072 @@ ul { list-style: none; }
   .product-modal-cart {
     justify-content: center;
   }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   PROFILE PAGE
+═══════════════════════════════════════════════════════════ */
+
+/* ─── ОСНОВНАЯ СЕКЦИЯ ───────────────────────────────────── */
+.profile-page {
+  background: var(--clr-bg-dark);
+  padding: 48px 0 80px;
+  min-height: 60vh;
+}
+
+/* ─── LAYOUT: ОДНА КОЛОНКА ──────────────────────────────── */
+.profile-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ─── FLASH СООБЩЕНИЯ ───────────────────────────────────── */
+.profile-flash-wrap {
+  max-width: 860px;
+  margin: 0 auto 16px;
+}
+
+/* ─── БЛОКИ ─────────────────────────────────────────────── */
+.profile-block {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(201,150,58,0.15);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px;
+  transition: border-color var(--transition);
+}
+.profile-block:hover {
+  border-color: rgba(201,150,58,0.28);
+}
+
+/* ─── ЗАГОЛОВОК БЛОКА ───────────────────────────────────── */
+.profile-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.profile-block-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--clr-gold-pale);
+  line-height: 1.2;
+}
+
+/* ─── КНОПКА РЕДАКТИРОВАТЬ ──────────────────────────────── */
+.profile-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid rgba(201,150,58,0.3);
+  border-radius: var(--radius);
+  color: var(--clr-gold);
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.profile-edit-btn:hover {
+  background: rgba(201,150,58,0.07);
+  border-color: var(--clr-gold);
+  color: var(--clr-gold-light);
+}
+.profile-edit-btn.editing {
+  border-color: rgba(180,60,60,0.45);
+  color: #e07070;
+}
+.profile-edit-btn.editing:hover {
+  background: rgba(180,60,60,0.08);
+  border-color: rgba(180,60,60,0.65);
+}
+
+/* ─── ЛИЧНЫЕ ДАННЫЕ: СЕТКА ──────────────────────────────── */
+.personal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 28px;
+}
+.personal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(201,150,58,0.10);
+}
+.personal-grid .personal-field:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.personal-field--full {
+  grid-column: span 2;
+}
+.personal-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--clr-text-muted);
+}
+.personal-input {
+  width: 100%;
+  padding: 11px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,150,58,0.18);
+  border-radius: var(--radius);
+  color: var(--clr-gold-pale);
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  transition: var(--transition);
+  outline: none;
+}
+.personal-input[readonly] {
+  cursor: default;
+  color: var(--clr-gold-pale);
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+}
+.personal-input[disabled] {
+  cursor: default;
+  color: var(--clr-text-muted);
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+}
+.personal-input:not([readonly]):not([disabled]):focus {
+  border-color: var(--clr-gold);
+  background: rgba(255,255,255,0.07);
+}
+
+/* ─── КНОПКА СОХРАНИТЬ ──────────────────────────────────── */
+.personal-save-wrap {
+  display: none;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(201,150,58,0.12);
+}
+.personal-save-wrap.visible {
+  display: flex;
+}
+/* ─── КНОПКА ВЫХОДА ─────────────────────────────────────── */
+.profile-block-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(201,150,58,0.10);
+}
+.profile-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid rgba(180,60,60,0.35);
+  border-radius: var(--radius);
+  color: #c87070;
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.profile-logout-btn:hover {
+  background: rgba(180,60,60,0.09);
+  border-color: rgba(180,60,60,0.6);
+  color: #e07070;
+}
+
+/* ─── ИСТОРИЯ ЗАЯВОК ────────────────────────────────────── */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.order-item:hover {
+  background: rgba(201,150,58,0.05);
+  border-color: rgba(201,150,58,0.2);
+}
+.order-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(201,150,58,0.1);
+  border: 1px solid rgba(201,150,58,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-gold);
+  flex-shrink: 0;
+}
+.order-info {
+  flex: 1;
+}
+.order-num {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--clr-gold-pale);
+  margin-bottom: 2px;
+}
+.order-date {
+  font-size: 12px;
+  color: var(--clr-text-muted);
+}
+.order-arrow {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.order-item:hover .order-arrow {
+  color: var(--clr-gold-light);
+}
+
+/* Кнопка "Показать ещё" в заявках */
+.orders-load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid rgba(201,150,58,0.2);
+  border-radius: var(--radius);
+  color: var(--clr-gold);
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.orders-load-more:hover {
+  background: rgba(201,150,58,0.06);
+  border-color: rgba(201,150,58,0.4);
+}
+.orders-load-more:disabled {
+  cursor: default;
+  color: var(--clr-text-muted);
+  border-color: rgba(201,150,58,0.1);
+}
+
+/* ─── АДРЕСА ДОСТАВКИ ───────────────────────────────────── */
+.addresses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.address-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,150,58,0.14);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+.address-item:hover {
+  border-color: rgba(201,150,58,0.28);
+  background: rgba(255,255,255,0.05);
+}
+.address-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.address-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  background: rgba(201,150,58,0.15);
+  border: 1px solid rgba(201,150,58,0.3);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--clr-gold);
+  letter-spacing: 0.3px;
+  width: fit-content;
+  margin-bottom: 2px;
+}
+.address-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--clr-gold-pale);
+  line-height: 1.4;
+}
+.address-contact {
+  font-size: 13px;
+  color: var(--clr-text-muted);
+}
+.address-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.address-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(201,150,58,0.2);
+  border-radius: var(--radius);
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.address-btn:hover {
+  color: var(--clr-gold-light);
+  border-color: var(--clr-gold);
+  background: rgba(201,150,58,0.07);
+}
+.address-btn--del:hover {
+  color: #e07070;
+  border-color: rgba(180,60,60,0.5);
+  background: rgba(180,60,60,0.07);
+}
+
+/* Кнопка добавить адрес */
+.address-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 1px dashed rgba(201,150,58,0.3);
+  border-radius: var(--radius);
+  color: var(--clr-gold);
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.address-add-btn:hover {
+  border-color: var(--clr-gold);
+  background: rgba(201,150,58,0.05);
+}
+
+/* Форма добавления адреса */
+.address-form-wrap {
+  display: none;
+  margin-top: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,150,58,0.2);
+  border-radius: var(--radius);
+  animation: slideDown 0.2s ease;
+}
+.address-form-wrap.visible {
+  display: block;
+}
+.address-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.address-form-grid .personal-input {
+  padding: 11px 16px;
+  border-color: rgba(201,150,58,0.25);
+  background: rgba(255,255,255,0.05);
+  color: var(--clr-text-light);
+}
+.address-form-grid .personal-input::placeholder {
+  color: rgba(158,126,94,0.6);
+}
+.address-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ─── БЛОК НУЖНА ПОМОЩЬ ─────────────────────────────────── */
+.profile-help-block {
+  background: linear-gradient(
+    135deg,
+    rgba(44,31,19,0.98) 0%,
+    rgba(44,31,19,0.92) 100%
+  );
+  border-color: rgba(201,150,58,0.22);
+  position: relative;
+  overflow: hidden;
+}
+.profile-help-block::before {
+  content: '';
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,150,58,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.profile-help-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.profile-help-content .profile-block-title {
+  margin-bottom: 8px;
+}
+.profile-help-text {
+  font-size: 14px;
+  color: var(--clr-text-muted);
+  line-height: 1.65;
+}
+.profile-help-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .profile-page {
+    padding: 36px 0 60px;
+  }
+  .profile-block {
+    padding: 24px 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .personal-grid {
+    grid-template-columns: 1fr;
+  }
+  .personal-field--full {
+    grid-column: span 1;
+  }
+  .profile-block-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .profile-help-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-help-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .profile-block {
+    padding: 20px 16px;
+    border-radius: var(--radius);
+  }
+  .address-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .address-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .address-form-footer > div {
+    display: flex;
+    gap: 10px;
+  }
+  .order-item {
+    padding: 12px 12px;
+  }
+  .profile-block-title {
+    font-size: 19px;
+  }
+}
+.profile-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.profile-sidebar {
+  position: sticky;
+  top: 80px;
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(201,150,58,0.15);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.profile-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 2px;
+}
+
+.profile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.profile-nav-item:hover {
+  color: var(--clr-gold-light);
+  background: rgba(201,150,58,0.06);
+  border-color: rgba(201,150,58,0.15);
+}
+
+.profile-nav-item.active {
+  color: var(--clr-gold-light);
+  background: rgba(201,150,58,0.10);
+  border-color: rgba(201,150,58,0.25);
+}
+
+.profile-nav-item svg {
+  flex-shrink: 0;
+  color: var(--clr-gold);
+  opacity: 0.75;
+  transition: var(--transition);
+}
+
+.profile-nav-item:hover svg,
+.profile-nav-item.active svg {
+  opacity: 1;
+}
+
+/* Разделитель перед «Выйти» */
+.profile-nav-logout {
+  margin-top: 8px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(201,150,58,0.12) !important;
+  color: #c87070;
+  border-radius: 0 0 var(--radius) var(--radius);
+  border: none;
+}
+
+.profile-nav-logout:hover {
+  color: #e07070;
+  background: rgba(180,60,60,0.08);
+  border-color: rgba(180,60,60,0.2) !important;
+}
+
+.profile-nav-logout svg {
+  color: #c87070;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+/* Скрыть кнопку "Выйти" внутри блока личных данных —
+   она теперь есть в боковой панели */
+/* Оставим её, она не мешает */
+
+/* ── Адаптивность: убрать сайдбар на мобильных ── */
+@media (max-width: 900px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+  .profile-sidebar {
+    display: none;
+  }
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════
+   DELIVERY PAGE
+═══════════════════════════════════════════════════════════ */
+
+/* ─── HERO ДОСТАВКИ ─────────────────────────────────────── */
+.delivery-hero .cat-hero-bg img {
+  object-position: 55% center;
+  filter: brightness(0.70) saturate(0.80);
+}
+.delivery-hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.delivery-hero-btns .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ─── СПОСОБЫ ДОСТАВКИ ──────────────────────────────────── */
+.delivery-methods {
+  background: var(--clr-bg-dark);
+  padding: 64px 0 60px;
+  border-top: 1px solid rgba(201,150,58,0.12);
+}
+.delivery-methods .section-title {
+  margin-bottom: 36px;
+}
+.delivery-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.delivery-method-card {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(201,150,58,0.15);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  transition: var(--transition);
+}
+.delivery-method-card:hover {
+  border-color: var(--clr-gold);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-gold);
+}
+.delivery-method-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201,150,58,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-gold);
+  background: rgba(201,150,58,0.06);
+  margin-bottom: 4px;
+  transition: var(--transition);
+}
+.delivery-method-card:hover .delivery-method-icon {
+  background: rgba(201,150,58,0.12);
+  border-color: var(--clr-gold);
+}
+.delivery-method-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--clr-gold-pale);
+  line-height: 1.3;
+}
+.delivery-method-card p {
+  font-size: 13px;
+  color: var(--clr-text-muted);
+  line-height: 1.5;
+  flex: 1;
+}
+.delivery-timing {
+  display: inline-block;
+  padding: 5px 16px;
+  border-radius: 20px;
+  background: rgba(201,150,58,0.12);
+  border: 1px solid rgba(201,150,58,0.3);
+  color: var(--clr-gold-light);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.delivery-timing--free {
+  background: rgba(60,150,80,0.12);
+  border-color: rgba(60,150,80,0.3);
+  color: #70d090;
+}
+
+/* ─── КАЛЬКУЛЯТОР + СРОКИ ───────────────────────────────── */
+.delivery-info {
+  background: var(--clr-bg-mid);
+  padding: 64px 0;
+  border-top: 1px solid rgba(201,150,58,0.12);
+}
+
+/* Внешняя сетка: левый блок и правый блок одинаковой высоты */
+.delivery-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch; /* ← растягивает оба блока до одинаковой высоты */
+}
+
+/* ── Левый блок: внутри два столбца (список | калькулятор) ── */
+.delivery-cost-block {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(201,150,58,0.18);
+  border-radius: var(--radius-lg);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* список | разделитель | калькулятор */
+  gap: 0;
+  overflow: hidden;
+}
+
+/* Левая колонка внутри блока */
+.delivery-cost-left {
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Вертикальный разделитель между колонками */
+.delivery-cost-vsep {
+  width: 1px;
+  background: rgba(201,150,58,0.12);
+  align-self: stretch;
+}
+
+.delivery-cost-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.delivery-cost-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--clr-text-muted);
+}
+.delivery-cost-list li svg {
+  color: var(--clr-gold);
+  flex-shrink: 0;
+}
+
+/* Бесплатная доставка — без фона, просто строка с иконкой */
+.delivery-free-plain {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: auto; /* прижимает к низу левой колонки */
+  padding-top: 20px;
+  border-top: 1px solid rgba(201,150,58,0.1);
+}
+.delivery-free-plain svg {
+  color: var(--clr-gold);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.delivery-free-plain strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--clr-gold-pale);
+  margin-bottom: 3px;
+}
+.delivery-free-plain span {
+  font-size: 12px;
+  color: var(--clr-text-muted);
+}
+
+/* Правая колонка: калькулятор */
+.delivery-calc {
+  padding: 44px 28px ;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Заголовок «Рассчитайте стоимость доставки» — выделен золотым цветом */
+.delivery-calc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--clr-gold);
+  letter-spacing: 0.2px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(201,150,58,0.2);
+}
+
+.delivery-calc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+.delivery-calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.delivery-calc-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--clr-text-muted);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.delivery-input-wrap {
+  position: relative;
+}
+.delivery-input {
+  width: 100%;
+  padding: 11px 38px 11px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,150,58,0.25);
+  border-radius: var(--radius);
+  color: var(--clr-text-light);
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  transition: var(--transition);
+  outline: none;
+}
+.delivery-input::placeholder { color: rgba(158,126,94,0.6); }
+.delivery-input:focus {
+  border-color: var(--clr-gold);
+  background: rgba(255,255,255,0.07);
+}
+.delivery-input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--clr-text-muted);
+  pointer-events: none;
+}
+.delivery-select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 38px;
+}
+.delivery-select option { background: var(--clr-bg-card); }
+
+.delivery-calc-btn {
+  margin-top: auto; /* кнопка прижата к низу колонки */
+  gap: 10px;
+  justify-content: center;
+}
+.delivery-calc-result {
+  padding: 14px 16px;
+  background: rgba(201,150,58,0.06);
+  border: 1px solid rgba(201,150,58,0.2);
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.65;
+  animation: slideDown 0.2s ease;
+}
+
+/* ── Правый блок: сроки доставки ── */
+.delivery-timing-block {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(201,150,58,0.18);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.delivery-timing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 24px;
+}
+.delivery-timing-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(201,150,58,0.08);
+}
+.delivery-timing-list li:last-child { border-bottom: none; }
+.delivery-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--clr-gold);
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(201,150,58,0.45);
+}
+.delivery-city {
+  flex: 1;
+  font-size: 14px;
+  color: var(--clr-gold-pale);
+  font-weight: 500;
+}
+.delivery-days {
+  font-size: 13px;
+  color: var(--clr-text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* SVG-карта (закомментирована в HTML, стили оставлены про запас) */
+.delivery-map-decor {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: rgba(201,150,58,0.03);
+  border: 1px solid rgba(201,150,58,0.1);
+  padding: 12px;
+}
+.delivery-map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Фото-блок — растягивается на оставшуюся высоту блока */
+.delivery-map-photo {
+  flex: 1;
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(201,150,58,0.15);
+  min-height: 140px;
+  background: rgba(26,18,11,0.6);
+}
+.delivery-map-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.82) saturate(0.75);
+  transition: filter 0.4s ease;
+}
+.delivery-map-photo:hover img {
+  filter: brightness(0.95) saturate(0.9);
+}
+.delivery-map-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26,18,11,0.4) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ─── СПОСОБЫ ОПЛАТЫ ────────────────────────────────────── */
+.payment-methods {
+  background: var(--clr-bg-dark);
+  padding: 64px 0 72px;
+  border-top: 1px solid rgba(201,150,58,0.12);
+}
+.payment-methods .section-title {
+  margin-bottom: 36px;
+}
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.payment-card {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(201,150,58,0.15);
+  border-radius: var(--radius-lg);
+  padding: 28px 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  transition: var(--transition);
+}
+.payment-card:hover {
+  border-color: var(--clr-gold);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-gold);
+}
+.payment-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  border: 1px solid rgba(201,150,58,0.3);
+  background: rgba(201,150,58,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-gold);
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.payment-card:hover .payment-icon {
+  background: rgba(201,150,58,0.14);
+  border-color: var(--clr-gold);
+}
+.payment-card h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--clr-gold-pale);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+.payment-card p {
+  font-size: 12px;
+  color: var(--clr-text-muted);
+  line-height: 1.5;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .delivery-methods-grid { grid-template-columns: repeat(2, 1fr); }
+  .payment-grid { grid-template-columns: repeat(2, 1fr); }
+  .delivery-info-grid { grid-template-columns: 1fr; }
+}
+/* На средних экранах — внутри левого блока тоже переходим в колонку */
+@media (max-width: 860px) {
+  .delivery-cost-block {
+    grid-template-columns: 1fr;
+  }
+  .delivery-cost-vsep {
+    width: auto;
+    height: 1px;
+    align-self: auto;
+  }
+}
+@media (max-width: 768px) {
+  .delivery-methods { padding: 48px 0; }
+  .delivery-methods-grid { grid-template-columns: repeat(2, 1fr); }
+  .delivery-cost-left { padding: 24px 20px; }
+  .delivery-calc { padding: 24px 20px; }
+  .delivery-timing-block { padding: 24px 20px; }
+  .payment-methods { padding: 48px 0; }
+  .delivery-hero-btns { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .delivery-methods-grid { grid-template-columns: 1fr; }
+  .payment-grid { grid-template-columns: 1fr; }
 }

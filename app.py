@@ -104,10 +104,10 @@ def make_nav_links(active_endpoint: str) -> list:
     links = [
         {"href": url_for("index"),   "label": "Главная",  "endpoint": "index"},
         {"href": url_for("catalog"), "label": "Каталог",  "endpoint": "catalog"},
-        {"href": "#contacts",        "label": "Контакты", "endpoint": None},
-        {"href": "#reviews",         "label": "Отзывы",   "endpoint": None},
-        {"href": "#delivery",        "label": "Доставка", "endpoint": None},
-        {"href": "#information",     "label": "Информация", "endpoint": None},
+        {"href": url_for("delivery"), "label": "Доставка", "endpoint": "delivery"},
+        {"href": "#contacts", "label": "Контакты", "endpoint": "None"},
+        {"href": "#reviews", "label": "Отзывы",   "endpoint": "None"},
+        {"href": "#information", "label": "Информация", "endpoint": "None"},
     ]
     for link in links:
         link["active"] = (link["endpoint"] == active_endpoint)
@@ -118,6 +118,7 @@ def make_nav_links(active_endpoint: str) -> list:
 # РОУТЫ
 # ─────────────────────────────────────────────
 
+# ── страница каталога главной──────────────
 @app.route("/")
 def index():
     return render_template(
@@ -128,7 +129,7 @@ def index():
     )
 
 
-# ── ДОБАВЛЕНО: страница каталога ──────────────
+# ── страница каталога ──────────────
 @app.route("/catalog")
 def catalog():
     return render_template(
@@ -137,8 +138,49 @@ def catalog():
         nav_links=make_nav_links("catalog"),
         meta=SITE_META,
     )
-# ──────────────────────────────────────────────
 
+@app.route("/profile")
+def profile():
+    # TODO: получать user из сессии/БД
+    # user = db.get_user(session['user_id'])
+    # orders = db.get_orders(user.id)
+    # addresses = db.get_addresses(user.id)
+    return render_template(
+        "profile.html",
+        nav_links=make_nav_links(None),
+        meta=SITE_META,
+        user=None,      # заглушка
+        orders=None,    # заглушка
+        addresses=None, # заглушка
+    )
+
+@app.route("/profile/save", methods=["POST"])
+def profile_save():
+    # TODO: сохранить в БД
+    # first_name = request.form.get("first_name")
+    # ...
+    flash("Данные сохранены.", "success")
+    return redirect(url_for("profile"))
+
+@app.route("/profile/add-address", methods=["POST"])
+def profile_add_address():
+    # TODO: сохранить адрес в БД
+    flash("Адрес добавлен.", "success")
+    return redirect(url_for("profile"))
+
+@app.route("/logout")
+def logout():
+    # TODO: session.clear() или logout_user() когда будет аутентификация
+    flash("Вы вышли из аккаунта.", "success")
+    return redirect(url_for("index"))
+
+@app.route("/delivery")
+def delivery():
+    return render_template(
+        "delivery.html",
+        nav_links=make_nav_links("delivery"),
+        meta=SITE_META,
+    )
 
 @app.route("/submit", methods=["POST"])
 def submit():

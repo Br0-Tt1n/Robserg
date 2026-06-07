@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}Личный кабинет — {{ meta.title }}{% endblock %}
+
+{% block content %}
+
+<!-- ════════════ HERO ════════════ -->
+<section class="cat-hero">
+  <div class="cat-hero-bg">
+    <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Личный кабинет" />
+  </div>
+  <div class="cat-hero-overlay"></div>
+  <div class="cat-hero-content container">
+    <div class="cat-hero-text">
+      <nav class="cat-breadcrumb">
+        <a href="{{ url_for('index') }}">Главная</a>
+        <span>/</span>
+        <span>Личный кабинет</span>
+      </nav>
+      <h1 class="cat-hero-title">Личный кабинет</h1>
+      <p class="cat-hero-sub">Управляйте своими заказами, настройками<br>и персональными данными</p>
+    </div>
+    <div class="hero-logo-wrap">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/Logo.png') }}"
+             alt="{{ meta.logo_text }}"
+             class="hero-logo-img" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ОСНОВНАЯ СЕКЦИЯ ════════════ -->
+<section class="profile-page">
+  <div class="container">
+
+    <!-- Flash сообщения -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="profile-flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+<div class="profile-layout">
+
+  <!-- ══ ЛЕВАЯ ПАНЕЛЬ НАВИГАЦИИ ══ -->
+  <aside class="profile-sidebar">
+    <nav class="profile-nav">
+      <a href="#block-orders" class="profile-nav-item active" onclick="setActive(this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        История заявок
+      </a>
+      <a href="#block-personal" class="profile-nav-item" onclick="setActive(this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Личные данные
+      </a>
+      <a href="#block-addresses" class="profile-nav-item" onclick="setActive(this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Адреса доставки
+      </a>
+      <a href="#block-help" class="profile-nav-item" onclick="setActive(this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Нужна помощь?
+      </a>
+      <a href="{{ url_for('index') }}" class="profile-nav-item profile-nav-logout">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Выйти из аккаунта
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ══ ПРАВАЯ ЧАСТЬ: БЛОКИ ══ -->
+  <div class="profile-content">
+      <div class="profile-block" id="block-personal">
+        <div class="profile-block-header">
+          <h2 class="profile-block-title">Личные данные</h2>
+          <button class="profile-edit-btn" id="edit-personal-btn" onclick="toggleEdit()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Редактировать
+          </button>
+        </div>
+
+        <form class="personal-form" id="personal-form" action="{{ url_for('profile_save') }}" method="POST">
+          <div class="personal-grid">
+            <div class="personal-field">
+              <label class="personal-label">Имя</label>
+              <input type="text" name="first_name" class="personal-input" id="field-first-name"
+                     value="{{ user.first_name if user else 'Алексей' }}" readonly />
+            </div>
+            <div class="personal-field">
+              <label class="personal-label">Фамилия</label>
+              <input type="text" name="last_name" class="personal-input" id="field-last-name"
+                     value="{{ user.last_name if user else 'Петров' }}" readonly />
+            </div>
+            <div class="personal-field">
+              <label class="personal-label">E-mail</label>
+              <input type="email" name="email" class="personal-input" id="field-email"
+                     value="{{ user.email if user else 'alexey@mail.ru' }}" readonly />
+            </div>
+            <div class="personal-field">
+              <label class="personal-label">Дата регистрации</label>
+              <input type="text" class="personal-input" value="{{ user.registered if user else '12 марта 2024' }}" readonly disabled />
+            </div>
+            <div class="personal-field personal-field--full">
+              <label class="personal-label">Телефон</label>
+              <input type="tel" name="phone" class="personal-input" id="field-phone"
+                     value="{{ user.phone if user else '+7 (999) 123-45-67' }}" readonly />
+            </div>
+          </div>
+
+          <!-- Кнопка "Сохранить" — скрыта по умолчанию -->
+          <div class="personal-save-wrap" id="save-wrap">
+            <button type="submit" class="btn btn-dark">
+              Сохранить изменения
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ══ БЛОК 2: ИСТОРИЯ ЗАЯВОК ══ -->
+      <div class="profile-block" id="block-orders">
+        <div class="profile-block-header">
+          <h2 class="profile-block-title">История отправленных заявок</h2>
+        </div>
+
+        <div class="orders-list" id="orders-list">
+          {% if orders %}
+            {% for order in orders %}
+            <div class="order-item">
+              <div class="order-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+              </div>
+              <div class="order-info">
+                <p class="order-num">Заявка №{{ order.id }}</p>
+                <p class="order-date">{{ order.date }}</p>
+              </div>
+              <button class="order-arrow">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+            {% endfor %}
+          {% else %}
+            <!-- Демо-данные (пока нет БД) -->
+            <div class="order-item">
+              <div class="order-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+              <div class="order-info">
+                <p class="order-num">Заявка №1247</p>
+                <p class="order-date">12 мая 2024</p>
+              </div>
+              <button class="order-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <div class="order-item">
+              <div class="order-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+              <div class="order-info">
+                <p class="order-num">Заявка №1246</p>
+                <p class="order-date">5 мая 2024</p>
+              </div>
+              <button class="order-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <div class="order-item">
+              <div class="order-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+              <div class="order-info">
+                <p class="order-num">Заявка №1245</p>
+                <p class="order-date">28 апреля 2024</p>
+              </div>
+              <button class="order-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <div class="order-item">
+              <div class="order-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+              <div class="order-info">
+                <p class="order-num">Заявка №1244</p>
+                <p class="order-date">20 апреля 2024</p>
+              </div>
+              <button class="order-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+          {% endif %}
+        </div>
+
+        <button class="orders-load-more" id="orders-load-btn" onclick="loadMoreOrders()">
+          Показать ещё
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ══ БЛОК 3: АДРЕСА ДОСТАВКИ ══ -->
+      <div class="profile-block" id="block-addresses">
+        <div class="profile-block-header">
+          <h2 class="profile-block-title">Адреса доставки</h2>
+        </div>
+
+        <div class="addresses-list">
+          {% if addresses %}
+            {% for addr in addresses %}
+            <div class="address-item">
+              <div class="address-info">
+                {% if addr.is_main %}
+                <span class="address-badge">Основной адрес</span>
+                {% endif %}
+                <p class="address-text">{{ addr.address }}</p>
+                <p class="address-contact">{{ addr.contact }}</p>
+              </div>
+              <div class="address-actions">
+                <button class="address-btn" title="Редактировать">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="address-btn address-btn--del" title="Удалить">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <!-- Демо-адрес (пока нет БД) -->
+            <div class="address-item">
+              <div class="address-info">
+                <span class="address-badge">Основной адрес</span>
+                <p class="address-text">г. Краснодар, ул. Дубовая, 45, кв. 12</p>
+                <p class="address-contact">Иванов Иван Иванович, +7 (999) 123-45-67</p>
+              </div>
+              <div class="address-actions">
+                <button class="address-btn" title="Редактировать">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="address-btn address-btn--del" title="Удалить">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </button>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        <button class="address-add-btn" onclick="showAddAddress()">
+          Добавить адрес
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+
+        <!-- Форма добавления адреса (скрыта) -->
+        <div class="address-form-wrap" id="address-form-wrap">
+          <form class="address-form" action="{{ url_for('profile_add_address') }}" method="POST">
+            <div class="address-form-grid">
+              <input type="text" name="address" class="personal-input" placeholder="Адрес доставки" required />
+              <input type="text" name="contact" class="personal-input" placeholder="Контактное лицо и телефон" required />
+            </div>
+            <div class="address-form-footer">
+              <label class="cat-checkbox">
+                <input type="checkbox" name="is_main" value="1" />
+                <span class="cat-checkbox-custom"></span>
+                <span class="cat-checkbox-label" style="color:#c4a882;">Сделать основным</span>
+              </label>
+              <div style="display:flex;gap:10px;">
+                <button type="button" class="btn btn-outline-gold btn-sm" onclick="hideAddAddress()">Отмена</button>
+                <button type="submit" class="btn btn-dark btn-sm">Сохранить адрес</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ══ БЛОК 4: НУЖНА ПОМОЩЬ ══ -->
+      <div class="profile-block profile-help-block" id="block-help">
+        <div class="profile-help-content">
+          <div>
+            <h2 class="profile-block-title" style="margin-bottom:8px;">Нужна помощь?</h2>
+            <p class="profile-help-text">Мы всегда готовы ответить на ваши вопросы<br>и помочь с выбором нашей продукции.</p>
+          </div>
+          <a href="{{ url_for('index') }}" class="btn btn-outline-gold profile-help-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Связаться с нами
+          </a>
+        </div>
+      </div>
+      </div><!-- /profile-content -->
+    </div><!-- /profile-layout -->
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // ── Активный пункт бокового меню ──
+  function setActive(el) {
+    document.querySelectorAll('.profile-nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+  // ── Режим редактирования личных данных ──
+  let isEditing = false;
+  const editableFields = ['field-first-name', 'field-last-name', 'field-email', 'field-phone'];
+  const originalValues = {};
+
+  // Сохраняем исходные значения
+  editableFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) originalValues[id] = el.value;
+  });
+
+  function toggleEdit() {
+    isEditing = !isEditing;
+    const btn = document.getElementById('edit-personal-btn');
+    const saveWrap = document.getElementById('save-wrap');
+
+    editableFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.readOnly = !isEditing;
+    });
+
+    if (isEditing) {
+      btn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Отменить`;
+      btn.classList.add('editing');
+      saveWrap.classList.add('visible');
+      // Фокус на первое поле
+      document.getElementById('field-first-name').focus();
+    } else {
+      // Отмена — восстанавливаем значения
+      editableFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = originalValues[id];
+      });
+      btn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Редактировать`;
+      btn.classList.remove('editing');
+      saveWrap.classList.remove('visible');
+    }
+  }
+
+  // ── Добавить адрес ──
+  function showAddAddress() {
+    document.getElementById('address-form-wrap').classList.add('visible');
+  }
+  function hideAddAddress() {
+    document.getElementById('address-form-wrap').classList.remove('visible');
+  }
+
+  // ── Показать ещё заявки (заглушка) ──
+  function loadMoreOrders() {
+    const btn = document.getElementById('orders-load-btn');
+    btn.innerHTML = 'Загрузка...';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.innerHTML = 'Все заявки загружены';
+    }, 800);
+  }
+</script>
+{% endblock %}
