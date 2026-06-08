@@ -82,6 +82,11 @@ PRODUCTS = [
         "image_url": "images/CubeMedium.png",
     },
 ]
+DEMO_CART = [
+    {**PRODUCTS[0], "qty": 2},
+    {**PRODUCTS[1], "qty": 1},
+    {**PRODUCTS[3], "qty": 1},
+]
 
 SITE_META = {
     "title":      "Robserg — Дубовая щепа и кубик с Кавказа",
@@ -179,6 +184,20 @@ def delivery():
     return render_template(
         "delivery.html",
         nav_links=make_nav_links("delivery"),
+        meta=SITE_META,
+    )
+
+@app.route("/cart")
+def cart():
+    # TODO: получать корзину из сессии или БД
+    # cart_items = session.get('cart', [])
+    cart_items = DEMO_CART          # заглушка
+    recommended = PRODUCTS[4:7]     # «Вам понравится»
+    return render_template(
+        "cart.html",
+        cart_items=cart_items,
+        recommended=recommended,
+        nav_links=make_nav_links(None),
         meta=SITE_META,
     )
 

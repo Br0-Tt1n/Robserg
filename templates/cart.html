@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина — {{ meta.title }}{% endblock %}
+
+{% block content %}
+
+<!-- ════════════ HERO КОРЗИНЫ ════════════ -->
+<section class="cat-hero">
+  <div class="cat-hero-bg">
+    <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Корзина" />
+  </div>
+  <div class="cat-hero-overlay"></div>
+  <div class="cat-hero-content container">
+    <div class="cat-hero-text">
+      <nav class="cat-breadcrumb">
+        <a href="{{ url_for('index') }}">Главная</a>
+        <span>/</span>
+        <span>Корзина</span>
+      </nav>
+      <h1 class="cat-hero-title">Корзина</h1>
+      <p class="cat-hero-sub">Проверьте выбранные товары и оформите заказ.</p>
+    </div>
+    <div class="hero-logo-wrap">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/Logo.png') }}"
+             alt="{{ meta.logo_text }}"
+             class="hero-logo-img" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ТЕЛО КОРЗИНЫ ════════════ -->
+<section class="cart-page">
+  <div class="container">
+
+    <!-- Flash-сообщения -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="profile-flash-wrap" style="max-width:100%;margin-bottom:20px;">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Если корзина пуста -->
+    {% if not cart_items %}
+    <div class="cart-empty">
+      <div class="cart-empty-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </div>
+      <h2 class="cart-empty-title">Корзина пуста</h2>
+      <p class="cart-empty-sub">Добавьте товары из каталога, чтобы оформить заказ.</p>
+      <a href="{{ url_for('catalog') }}" class="btn btn-dark cart-empty-btn">Перейти в каталог →</a>
+    </div>
+
+    {% else %}
+    <!-- ── ОСНОВНОЙ LAYOUT ── -->
+    <div class="cart-layout">
+
+      <!-- ══ ЛЕВАЯ ЧАСТЬ: список товаров ══ -->
+      <div class="cart-main">
+
+        <!-- Шапка: «Выбрать все» + счётчик -->
+        <div class="cart-header">
+          <label class="cart-select-all cat-checkbox">
+            <input type="checkbox" id="select-all" onchange="toggleSelectAll(this)" />
+            <span class="cat-checkbox-custom"></span>
+            <span class="cat-checkbox-label cart-header-label">Выбрать все</span>
+          </label>
+          <span class="cart-header-count" id="selected-count-label">
+            Выбрано: <b id="selected-count">0</b> из <b>{{ cart_items | length }}</b>
+          </span>
+          <button class="cart-delete-selected" onclick="deleteSelected()" id="delete-selected-btn" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/>
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+            Удалить выбранные
+          </button>
+        </div>
+
+        <!-- Список товаров -->
+        <div class="cart-items" id="cart-items-list">
+          {% for item in cart_items %}
+          <div class="cart-item" id="cart-item-{{ item.id }}" data-price="{{ item.price }}" data-id="{{ item.id }}">
+
+            <!-- Флажок -->
+            <label class="cart-item-check cat-checkbox">
+              <input type="checkbox" class="item-checkbox" data-id="{{ item.id }}"
+                     onchange="updateSelection()" />
+              <span class="cat-checkbox-custom"></span>
+            </label>
+
+            <!-- Фото товара -->
+            <div class="cart-item-img">
+              <img src="{{ url_for('static', filename=item.image_url) if not item.image_url.startswith('http') else item.image_url }}"
+                   alt="{{ item.name }}" loading="lazy" />
+              {% if item.badge %}
+              <span class="cart-item-badge">{{ item.badge }}</span>
+              {% endif %}
+            </div>
+
+            <!-- Информация -->
+            <div class="cart-item-info">
+              <h3 class="cart-item-name">{{ item.name }}</h3>
+              <p class="cart-item-weight">{{ item.weight }}</p>
+              <p class="cart-item-desc">{{ item.description }}</p>
+            </div>
+
+            <!-- Кол-во + цена + удалить -->
+            <div class="cart-item-right">
+              <!-- Счётчик количества -->
+              <div class="cart-qty-wrap">
+                <button class="cart-qty-btn" onclick="changeQty({{ item.id }}, -1)" aria-label="Уменьшить">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <span class="cart-qty-val" id="qty-{{ item.id }}">{{ item.qty }}</span>
+                <button class="cart-qty-btn" onclick="changeQty({{ item.id }}, 1)" aria-label="Увеличить">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+
+              <!-- Цена -->
+              <p class="cart-item-price" id="price-{{ item.id }}">{{ item.price * item.qty }} ₽</p>
+
+              <!-- Удалить -->
+              <button class="cart-item-del" onclick="removeItem({{ item.id }})" aria-label="Удалить">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+          {% endfor %}
+        </div><!-- /cart-items-list -->
+
+        <!-- Недавно просмотренные / рекомендации (заглушка) -->
+        <div class="cart-recommendations">
+          <h3 class="cart-rec-title">Вам может понравиться</h3>
+          <div class="cart-rec-grid">
+            {% for product in recommended %}
+            <div class="cat-card cart-rec-card">
+              <div class="cat-card-img">
+                <img src="{{ url_for('static', filename=product.image_url) if not product.image_url.startswith('http') else product.image_url }}"
+                     alt="{{ product.name }}" loading="lazy" />
+                {% if product.badge %}<span class="cat-badge">{{ product.badge }}</span>{% endif %}
+              </div>
+              <div class="cat-card-body">
+                <h3 class="cat-card-name">{{ product.name }}</h3>
+                <p class="cat-card-weight">{{ product.weight }}</p>
+                <div class="cat-card-footer">
+                  <span class="cat-card-price">{{ product.price }} ₽</span>
+                  <button class="cat-cart-btn" aria-label="В корзину">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                      <line x1="3" y1="6" x2="21" y2="6"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div><!-- /cart-main -->
+
+      <!-- ══ ПРАВАЯ ЧАСТЬ: итог заказа ══ -->
+      <aside class="cart-sidebar">
+        <div class="cart-summary">
+          <h2 class="cart-summary-title">Итого</h2>
+
+          <div class="cart-summary-row">
+            <span>Товары (<span id="summary-count">0</span> шт.)</span>
+            <span id="summary-goods">0 ₽</span>
+          </div>
+
+          <div class="cart-summary-row cart-summary-row--discount" id="discount-row" style="display:none;">
+            <span>Скидка</span>
+            <span id="summary-discount" class="cart-discount-val">−0 ₽</span>
+          </div>
+
+          <div class="cart-summary-row">
+            <span>Доставка</span>
+            <span class="cart-delivery-val" id="summary-delivery">Рассчитывается</span>
+          </div>
+
+          <div class="cart-summary-divider"></div>
+
+          <div class="cart-summary-total-row">
+            <span class="cart-summary-total-label">К оплате</span>
+            <span class="cart-summary-total-val" id="summary-total">0 ₽</span>
+          </div>
+
+          <!-- Промокод -->
+          <div class="cart-promo-wrap" id="promo-wrap">
+            <button class="cart-promo-toggle" onclick="togglePromo()" id="promo-toggle-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 12 20 22 4 22 4 12"/>
+                <rect x="2" y="7" width="20" height="5"/>
+                <line x1="12" y1="22" x2="12" y2="7"/>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+              </svg>
+              Есть промокод?
+            </button>
+            <div class="cart-promo-field" id="promo-field">
+              <div class="delivery-input-wrap">
+                <input type="text" class="delivery-input" id="promo-input" placeholder="Введите промокод" />
+              </div>
+              <button class="btn btn-outline-gold btn-sm" onclick="applyPromo()">Применить</button>
+            </div>
+          </div>
+
+          <a href="{{ url_for('checkout') if checkout_url is defined else '#' }}" class="btn btn-dark full-w cart-order-btn" id="order-btn">
+            Оформить заказ →
+          </a>
+
+          <p class="cart-summary-note">
+            Нажимая «Оформить заказ», вы соглашаетесь<br>с условиями пользовательского соглашения
+          </p>
+        </div>
+
+        <!-- Преимущества -->
+        <div class="cart-perks">
+          <div class="cart-perk">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>
+            </svg>
+            <span>Быстрая отправка по всей России</span>
+          </div>
+          <div class="cart-perk">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Гарантия качества на каждую партию</span>
+          </div>
+          <div class="cart-perk">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>Производство в Адыгее, Майкоп</span>
+          </div>
+        </div>
+      </aside>
+
+    </div><!-- /cart-layout -->
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  // ══════════════════════════════════════════════
+  //  ДАННЫЕ ИЗ JINJA2 → JS
+  // ══════════════════════════════════════════════
+  const CART_DATA = {
+    {% if cart_items %}
+    {% for item in cart_items %}
+    {{ item.id }}: { price: {{ item.price }}, qty: {{ item.qty }} },
+    {% endfor %}
+    {% endif %}
+  };
+
+  // ══════════════════════════════════════════════
+  //  СОСТОЯНИЕ
+  // ══════════════════════════════════════════════
+  const qtys   = {};   // { id: qty }
+  const prices = {};   // { id: unit_price }
+
+  // инициализация из CART_DATA
+  Object.entries(CART_DATA).forEach(([id, d]) => {
+    qtys[id]   = d.qty;
+    prices[id] = d.price;
+  });
+
+  // ══════════════════════════════════════════════
+  //  КОЛИЧЕСТВО
+  // ══════════════════════════════════════════════
+  function changeQty(id, delta) {
+    const key = String(id);
+    qtys[key] = Math.max(1, (qtys[key] || 1) + delta);
+
+    const qEl = document.getElementById('qty-' + id);
+    const pEl = document.getElementById('price-' + id);
+    if (qEl) qEl.textContent = qtys[key];
+    if (pEl) pEl.textContent = (prices[key] * qtys[key]).toLocaleString('ru-RU') + ' ₽';
+
+    updateSummary();
+    // TODO: AJAX → сохранить на сервере
+  }
+
+  // ══════════════════════════════════════════════
+  //  УДАЛИТЬ ОДИН ТОВАР
+  // ══════════════════════════════════════════════
+  function removeItem(id) {
+    const el = document.getElementById('cart-item-' + id);
+    if (!el) return;
+    el.classList.add('cart-item--removing');
+    setTimeout(() => {
+      el.remove();
+      delete qtys[String(id)];
+      delete prices[String(id)];
+      updateSelection();
+      checkEmpty();
+    }, 300);
+    // TODO: AJAX → удалить на сервере
+  }
+
+  // ══════════════════════════════════════════════
+  //  ВЫДЕЛЕНИЕ / «Выбрать все»
+  // ══════════════════════════════════════════════
+  function toggleSelectAll(master) {
+    document.querySelectorAll('.item-checkbox').forEach(cb => {
+      cb.checked = master.checked;
+    });
+    updateSelection();
+  }
+
+  function updateSelection() {
+    const all      = document.querySelectorAll('.item-checkbox');
+    const checked  = document.querySelectorAll('.item-checkbox:checked');
+    const master   = document.getElementById('select-all');
+    const delBtn   = document.getElementById('delete-selected-btn');
+    const countEl  = document.getElementById('selected-count');
+
+    if (master) {
+      master.checked       = checked.length > 0 && checked.length === all.length;
+      master.indeterminate = checked.length > 0 && checked.length < all.length;
+    }
+    if (countEl) countEl.textContent = checked.length;
+    if (delBtn)  delBtn.disabled = checked.length === 0;
+
+    updateSummary();
+  }
+
+  // ══════════════════════════════════════════════
+  //  УДАЛИТЬ ВЫБРАННЫЕ
+  // ══════════════════════════════════════════════
+  function deleteSelected() {
+    document.querySelectorAll('.item-checkbox:checked').forEach(cb => {
+      removeItem(cb.dataset.id);
+    });
+  }
+
+  // ══════════════════════════════════════════════
+  //  ИТОГОВАЯ СУММА
+  // ══════════════════════════════════════════════
+  function updateSummary() {
+    const checked = document.querySelectorAll('.item-checkbox:checked');
+    let total = 0;
+    let count = 0;
+
+    checked.forEach(cb => {
+      const id  = String(cb.dataset.id);
+      const qty = qtys[id] || 1;
+      const prc = prices[id] || 0;
+      total += qty * prc;
+      count += qty;
+    });
+
+    const fmt = n => n.toLocaleString('ru-RU') + ' ₽';
+
+    const cEl = document.getElementById('summary-count');
+    const gEl = document.getElementById('summary-goods');
+    const tEl = document.getElementById('summary-total');
+    const dEl = document.getElementById('summary-delivery');
+    const oBtn = document.getElementById('order-btn');
+
+    if (cEl) cEl.textContent = count;
+    if (gEl) gEl.textContent = fmt(total);
+    if (tEl) tEl.textContent = fmt(total);
+    if (dEl) dEl.textContent = count > 0 ? 'Рассчитывается' : '—';
+    if (oBtn) {
+      oBtn.classList.toggle('btn-disabled', count === 0);
+      oBtn.style.opacity = count === 0 ? '0.45' : '1';
+      oBtn.style.pointerEvents = count === 0 ? 'none' : '';
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  //  ПРОМОКОД
+  // ══════════════════════════════════════════════
+  function togglePromo() {
+    const field = document.getElementById('promo-field');
+    const btn   = document.getElementById('promo-toggle-btn');
+    const open  = field.classList.toggle('visible');
+    btn.classList.toggle('active', open);
+    if (open) document.getElementById('promo-input').focus();
+  }
+
+  function applyPromo() {
+    const code = document.getElementById('promo-input').value.trim();
+    if (!code) return;
+    // TODO: AJAX-проверка промокода
+    alert('Промокод «' + code + '» пока не поддерживается.');
+  }
+
+  // ══════════════════════════════════════════════
+  //  ПРОВЕРИТЬ ПУСТУЮ КОРЗИНУ
+  // ══════════════════════════════════════════════
+  function checkEmpty() {
+    const items = document.querySelectorAll('.cart-item');
+    if (items.length === 0) {
+      // Перезагрузим страницу, чтобы показало «Корзина пуста»
+      location.reload();
+    }
+  }
+
+  // ── Инициализация при загрузке ──
+  updateSelection();
+</script>
+{% endblock %}
