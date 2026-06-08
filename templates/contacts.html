@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+
+{% block title %}Контакты — {{ meta.title }}{% endblock %}
+
+{% block content %}
+
+<!-- ════════════ HERO КОНТАКТОВ ════════════ -->
+<section class="cat-hero contacts-hero">
+  <div class="cat-hero-bg">
+    <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Контакты" />
+  </div>
+  <div class="cat-hero-overlay"></div>
+  <div class="cat-hero-content container">
+    <div class="cat-hero-text">
+      <nav class="cat-breadcrumb">
+        <a href="{{ url_for('index') }}">Главная</a>
+        <span>/</span>
+        <span>Контакты</span>
+      </nav>
+      <h1 class="cat-hero-title">Контакты</h1>
+      <p class="cat-hero-sub">Мы всегда готовы ответить на ваши вопросы<br>и помочь с выбором нашей продукции.</p>
+    </div>
+    <div class="hero-logo-wrap">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/Logo.png') }}"
+             alt="{{ meta.logo_text }}"
+             class="hero-logo-img" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ КАРТОЧКИ КОНТАКТОВ ════════════ -->
+<section class="contacts-cards-section">
+  <div class="container">
+    <div class="contacts-cards-grid">
+
+      <div class="contacts-info-card">
+        <div class="contacts-info-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.95-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </div>
+        <h3>Телефон</h3>
+        <p class="contacts-info-value">+7 (967) 654-12-81</p>
+        <p class="contacts-info-sub">Ежедневно с 9:00 до 22:00</p>
+      </div>
+
+      <div class="contacts-info-card">
+        <div class="contacts-info-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <h3>E-mail</h3>
+        <p class="contacts-info-value">Robserg.01@yandex.ru</p>
+        <p class="contacts-info-sub">Ответим в течение 30 минут</p>
+      </div>
+
+      <div class="contacts-info-card">
+        <div class="contacts-info-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <h3>Адрес</h3>
+        <p class="contacts-info-value">Россия, Адыгея<br>г. Майкоп</p>
+        <p class="contacts-info-sub">Склад и офис</p>
+      </div>
+
+      <div class="contacts-info-card">
+        <div class="contacts-info-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M17 2H7C5.9 2 5 2.9 5 4v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            <path d="M9 22v-4h6v4"/>
+            <path d="M8 6h.01M8 10h.01M8 14h.01"/>
+          </svg>
+        </div>
+        <h3>Мы в соцсетях</h3>
+        <p class="contacts-info-value">@robserg</p>
+        <p class="contacts-info-sub">Подписывайтесь и будьте<br>в курсе новинок и акций</p>
+      </div>
+
+    </div>
+
+    <!-- Иконки соцсетей -->
+    <div class="contacts-socials-row">
+      <a href="{{ meta.wb_url }}" target="_blank" class="contacts-social-link" title="Wildberries">
+        <img src="{{ url_for('static', filename='icons/WB_2.png') }}" alt="WB" class="contacts-social-img" />
+      </a>
+      <a href="{{ meta.vk_url }}" target="_blank" class="contacts-social-link" title="ВКонтакте">
+        <img src="{{ url_for('static', filename='icons/VK_2.png') }}" alt="VK" class="contacts-social-img" />
+      </a>
+      <a href="{{ meta.max_url }}" target="_blank" class="contacts-social-link" title="МАКС">
+        <img src="{{ url_for('static', filename='icons/MAX_2.png') }}" alt="MAX" class="contacts-social-img" />
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════ ФОРМА + КАРТА ════════════ -->
+<section class="contacts-form-section">
+  <div class="container">
+    <div class="contacts-form-grid">
+
+      <!-- Левая часть: форма -->
+      <div class="contacts-form-block">
+        <h2 class="contacts-block-title">Свяжитесь с нами</h2>
+        <p class="contacts-block-sub">Оставьте свои данные, и мы свяжемся с вами<br>в ближайшее время.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form class="contacts-page-form" action="{{ url_for('submit') }}" method="POST">
+          <input type="text" name="name" placeholder="Ваше имя" required />
+          <input type="email" name="email" placeholder="E-mail" />
+          <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" />
+          <textarea name="message" placeholder="Ваше сообщение" rows="4"></textarea>
+          <button type="submit" class="btn btn-dark full-w contacts-submit-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            Отправить сообщение
+          </button>
+          <p class="contacts-form-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Мы не передаём ваши данные третьим лицам
+          </p>
+        </form>
+      </div>
+
+      <!-- Правая часть: карта -->
+      <div class="contacts-map-block">
+        <a href="https://yandex.ru/maps/?ll=40.082557%2C44.606945&z=14&pt=40.082557,44.606945,pm2rdm~40.082557,44.606945" 
+           target="_blank" 
+           class="contacts-map-link"
+           title="Открыть в Яндекс.Картах">
+          <div class="contacts-map-inner">
+            <iframe
+              src="https://yandex.ru/map-widget/v1/?ll=40.082557%2C44.606945&z=14&pt=40.082557%2C44.606945%2Cpm2rdm&l=map"
+              width="100%"
+              height="100%"
+              frameborder="0"
+              allowfullscreen
+              class="contacts-map-iframe"
+              title="Карта"
+              loading="lazy"
+            ></iframe>
+            <!-- Оверлей, блокирующий взаимодействие с картой и перенаправляющий на Яндекс.Карты -->
+            <div class="contacts-map-overlay">
+              <div class="contacts-map-pin">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </div>
+              <div class="contacts-map-info">
+                <strong>Robserg — Дубовая щепа</strong>
+                <span>Россия, Адыгея, г. Майкоп</span>
+                <span>Ежедневно с 9:00 до 22:00</span>
+              </div>
+              <div class="contacts-map-open-hint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                Открыть в Яндекс.Картах
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ ════════════ -->
+<section class="contacts-faq-section">
+  <div class="container">
+    <h2 class="section-title centered">Часто задаваемые вопросы</h2>
+    <div class="faq-grid">
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-header">
+          <span class="faq-question">Как оформить заказ?</span>
+          <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
+        <div class="faq-body">
+          <p>Оформить заказ можно через наш магазин на Wildberries, через форму обратной связи на сайте, или связавшись с нами напрямую по телефону или в социальных сетях. Минимальный размер заказа — от 500 г.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-header">
+          <span class="faq-question">Как быстро обрабатывается заказ?</span>
+          <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
+        <div class="faq-body">
+          <p>Заказы обрабатываются в течение 1 рабочего дня. После подтверждения заказа мы уведомим вас о сроках отправки. Как правило, отгрузка происходит на следующий рабочий день после оплаты.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-header">
+          <span class="faq-question">Какие способы оплаты доступны?</span>
+          <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
+        <div class="faq-body">
+          <p>Мы принимаем оплату банковскими картами (через Wildberries), банковским переводом для оптовых заказов. Наличные — при самовывозе. Подробности уточняйте у менеджера.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-header">
+          <span class="faq-question">Можно ли забрать заказ самовывозом?</span>
+          <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
+        <div class="faq-body">
+          <p>Да, самовывоз возможен со склада в г. Майкоп, Адыгея. Для согласования времени самовывоза необходимо предварительно связаться с нами по телефону или через форму обратной связи.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ НАШИ ДИСТРИБЬЮТОРЫ ════════════ -->
+<section class="distributors-section">
+  <div class="container">
+    <h2 class="section-title" style="color: var(--clr-gold-pale);">Наши дистрибьюторы</h2>
+    <p class="distributors-sub">Надёжные партнёры по всей России</p>
+
+    <div class="distributors-wrap">
+      <button class="dist-nav-btn dist-nav-prev" id="dist-prev" onclick="slideDistributors(-1)" aria-label="Назад">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <div class="distributors-viewport" id="dist-viewport">
+        <div class="distributors-track" id="dist-track">
+
+          <!-- Дистрибьютор 1 -->
+          <div class="dist-card">
+            <div class="dist-card-img" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80')"></div>
+            <div class="dist-card-body">
+              <div class="dist-card-header">
+                <h3 class="dist-card-name">Компания Город</h3>
+                <span class="dist-badge">Официальный дистрибьютор</span>
+              </div>
+              <ul class="dist-info-list">
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Москва и МО
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.95-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +7 (495) 123-45-67
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  gorod@robserg.ru
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Дистрибьютор 2 -->
+          <div class="dist-card">
+            <div class="dist-card-img" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&q=80')"></div>
+            <div class="dist-card-body">
+              <div class="dist-card-header">
+                <h3 class="dist-card-name">Компания Сибирь</h3>
+                <span class="dist-badge">Официальный дистрибьютор</span>
+              </div>
+              <ul class="dist-info-list">
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Новосибирск и область
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.95-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +7 (383) 987-65-43
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  sibir@robserg.ru
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Дистрибьютор 3 -->
+          <div class="dist-card">
+            <div class="dist-card-img" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80')"></div>
+            <div class="dist-card-body">
+              <div class="dist-card-header">
+                <h3 class="dist-card-name">Компания Юг</h3>
+                <span class="dist-badge">Официальный дистрибьютор</span>
+              </div>
+              <ul class="dist-info-list">
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Ростов-на-Дону и область
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.95-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +7 (863) 955-21-09
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  yug@robserg.ru
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Дистрибьютор 4 -->
+          <div class="dist-card">
+            <div class="dist-card-img" style="background-image: url('https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=400&q=80')"></div>
+            <div class="dist-card-body">
+              <div class="dist-card-header">
+                <h3 class="dist-card-name">Компания Урал</h3>
+                <span class="dist-badge">Официальный дистрибьютор</span>
+              </div>
+              <ul class="dist-info-list">
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Екатеринбург и область
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.95-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +7 (343) 345-67-89
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  ural@robserg.ru
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Дистрибьютор 5 -->
+          <div class="dist-card">
+            <div class="dist-card-img" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=80')"></div>
+            <div class="dist-card-body">
+              <div class="dist-card-header">
+                <h3 class="dist-card-name">Компания Север</h3>
+                <span class="dist-badge">Официальный дистрибьютор</span>
+              </div>
+              <ul class="dist-info-list">
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Санкт-Петербург и ЛО
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.95-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  +7 (812) 222-33-44
+                </li>
+                <li>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  sever@robserg.ru
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div><!-- /dist-track -->
+      </div><!-- /dist-viewport -->
+
+      <button class="dist-nav-btn dist-nav-next" id="dist-next" onclick="slideDistributors(1)" aria-label="Вперёд">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Dots -->
+    <div class="dist-dots" id="dist-dots"></div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // ── FAQ аккордеон ──
+  function toggleFaq(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ── Карусель дистрибьюторов ──
+  const track    = document.getElementById('dist-track');
+  const viewport = document.getElementById('dist-viewport');
+  const dotsWrap = document.getElementById('dist-dots');
+  let currentIndex = 0;
+
+  function getVisible() {
+    const w = viewport.offsetWidth;
+    if (w < 500) return 1;
+    if (w < 780) return 2;
+    if (w < 1050) return 3;
+    return 4;
+  }
+
+  const cards = track.querySelectorAll('.dist-card');
+  const total = cards.length;
+
+  function buildDots() {
+    dotsWrap.innerHTML = '';
+    const pages = total - getVisible() + 1;
+    for (let i = 0; i < pages; i++) {
+      const d = document.createElement('button');
+      d.className = 'dist-dot' + (i === currentIndex ? ' active' : '');
+      d.setAttribute('aria-label', 'Перейти к слайду ' + (i + 1));
+      d.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(d);
+    }
+  }
+
+  function updateButtons() {
+    document.getElementById('dist-prev').disabled = currentIndex === 0;
+    document.getElementById('dist-next').disabled = currentIndex >= total - getVisible();
+  }
+
+  function goTo(index) {
+    const maxIndex = total - getVisible();
+    currentIndex = Math.max(0, Math.min(index, maxIndex));
+    const cardWidth = cards[0].offsetWidth + 20; // gap 20px
+    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    buildDots();
+    updateButtons();
+  }
+
+  function slideDistributors(dir) {
+    goTo(currentIndex + dir);
+  }
+
+  // Инициализация
+  buildDots();
+  updateButtons();
+
+  // Пересчёт при ресайзе
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      currentIndex = 0;
+      goTo(0);
+    }, 150);
+  });
+
+  // Свайп на мобильных
+  let touchStartX = 0;
+  viewport.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  viewport.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) slideDistributors(diff > 0 ? 1 : -1);
+  });
+</script>
+{% endblock %}

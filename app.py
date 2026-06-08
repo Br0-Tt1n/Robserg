@@ -110,9 +110,10 @@ def make_nav_links(active_endpoint: str) -> list:
         {"href": url_for("index"),   "label": "Главная",  "endpoint": "index"},
         {"href": url_for("catalog"), "label": "Каталог",  "endpoint": "catalog"},
         {"href": url_for("delivery"), "label": "Доставка", "endpoint": "delivery"},
-        {"href": "#contacts", "label": "Контакты", "endpoint": "None"},
+        {"href": url_for("information"), "label": "Информация", "endpoint": "information"},
+        {"href": url_for("contacts"), "label": "Контакты", "endpoint": "contacts"},
         {"href": "#reviews", "label": "Отзывы",   "endpoint": "None"},
-        {"href": "#information", "label": "Информация", "endpoint": "None"},
+       
     ]
     for link in links:
         link["active"] = (link["endpoint"] == active_endpoint)
@@ -198,6 +199,22 @@ def cart():
         cart_items=cart_items,
         recommended=recommended,
         nav_links=make_nav_links(None),
+        meta=SITE_META,
+    )
+
+@app.route("/information")
+def information():
+    return render_template(
+        "information.html",
+        nav_links=make_nav_links("information"),
+        meta=SITE_META,
+    )
+ 
+@app.route("/contacts")
+def contacts():
+    return render_template(
+        "contacts.html",
+        nav_links=make_nav_links("contacts"),
         meta=SITE_META,
     )
 

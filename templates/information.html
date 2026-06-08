@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}Информация — {{ meta.title }}{% endblock %}
+
+{% block content %}
+
+<!-- ════════════ HERO ════════════ -->
+<section class="cat-hero info-hero">
+  <div class="cat-hero-bg">
+    <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Информация" />
+  </div>
+  <div class="cat-hero-overlay"></div>
+  <div class="cat-hero-content container">
+    <div class="cat-hero-text">
+      <nav class="cat-breadcrumb">
+        <a href="{{ url_for('index') }}">Главная</a>
+        <span>/</span>
+        <span>Информация</span>
+      </nav>
+      <h1 class="cat-hero-title">Информация</h1>
+      <p class="cat-hero-sub">Мы всегда готовы помочь и ответить<br>на любые вопросы о нашей продукции,<br>доставке и оплате.</p>
+    </div>
+    <div class="hero-logo-wrap">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/Logo.png') }}"
+             alt="{{ meta.logo_text }}"
+             class="hero-logo-img" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ОСНОВНОЙ БЛОК ════════════ -->
+<section class="info-page">
+  <div class="container">
+    <div class="info-layout">
+
+      <!-- ── ЛЕВАЯ ПАНЕЛЬ: КОНТАКТЫ ── -->
+      <aside class="info-sidebar">
+
+        <!-- Контакты -->
+        <div class="info-contact-block">
+          <h3 class="info-sidebar-title">Свяжитесь с нами</h3>
+          <ul class="info-contact-list">
+            <li class="info-contact-item">
+              <div class="info-contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.4 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.54a16 16 0 0 0 6.29 6.29l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </div>
+              <div class="info-contact-text">
+                <span class="info-contact-label">Телефон</span>
+                <a href="tel:+79676541281" class="info-contact-val">+7 (967) 654-12-81</a>
+                <span class="info-contact-note">Ежедневно с 9:00 до 22:00</span>
+              </div>
+            </li>
+            <li class="info-contact-item">
+              <div class="info-contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+              </div>
+              <div class="info-contact-text">
+                <span class="info-contact-label">E-mail</span>
+                <a href="mailto:Robserg.01@yandex.ru" class="info-contact-val">Robserg.01@yandex.ru</a>
+                <span class="info-contact-note">Ответим в течение 24 часов</span>
+              </div>
+            </li>
+            <li class="info-contact-item">
+              <div class="info-contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <div class="info-contact-text">
+                <span class="info-contact-label">ВКонтакте</span>
+                <a href="{{ meta.vk_url }}" target="_blank" class="info-contact-val">Написать в VK</a>
+                <span class="info-contact-note">Быстрый ответ</span>
+              </div>
+            </li>
+            <li class="info-contact-item">
+              <div class="info-contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <div class="info-contact-text">
+                <span class="info-contact-label">МАКС</span>
+                <a href="{{ meta.max_url }}" target="_blank" class="info-contact-val">Написать в МАКС</a>
+                <span class="info-contact-note">Мы онлайн</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Не нашли ответ -->
+        <div class="info-noanswer-block">
+          <h4 class="info-noanswer-title">Не нашли ответ?</h4>
+          <p class="info-noanswer-text">Напишите нам, и мы поможем вам разобраться.</p>
+          <a href="{{ url_for('index') }}#faq" class="btn btn-outline-gold btn-sm" style="margin-top:6px; width:100%; justify-content:center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Написать сообщение
+          </a>
+        </div>
+
+      </aside>
+
+      <!-- ── ПРАВАЯ ЧАСТЬ: FAQ ── -->
+      <div class="info-main">
+
+        <!-- Заголовок + поиск -->
+        <div class="faq-header">
+          <h2 class="info-section-title">Часто задаваемые вопросы</h2>
+          <div class="faq-search-wrap">
+            <input type="text" class="faq-search" id="faq-search" placeholder="Поиск по вопросам..." oninput="searchFaq(this.value)" />
+            <svg class="faq-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Список FAQ -->
+        <div class="faq-list" id="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Что такое дубовая щепа и для чего она используется?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Дубовая щепа — это измельчённая древесина дуба, которую используют для ароматизации и выдержки домашних напитков: самогона, вина, пива, коньяка. Она придаёт напитку ванильные, карамельные и древесные ноты, имитируя выдержку в дубовой бочке.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Какие основные фракции щепы у вас представлены?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Мы предлагаем щепу трёх степеней обжига: лёгкий (ванильный аромат), средний (баланс ванили и карамели) и сильный (дымные ноты шоколада и кофе). Также в наличии дубовые кубики для длительной выдержки.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Как выбрать подходящую щепу для напитка?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Для светлых дистиллятов (самогон, кальвадос) подойдёт лёгкий обжиг. Для виски и коньяка — средний. Для тёмных напитков и бренди — сильный обжиг. Дубовые кубики используют тогда, когда нужна медленная и глубокая экстракция.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Нужно ли вымачивать щепу перед использованием?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Нет, вымачивать не нужно. Нашу щепу можно сразу добавлять в напиток. При желании можно промыть под холодной водой и высушить — это уберёт мелкую древесную пыль.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Как долго настаивать напиток на щепе?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Обычно от 2 до 8 недель в зависимости от желаемой насыщенности. Рекомендуем пробовать напиток раз в неделю и убрать щепу, когда вкус вас устроит. Дубовые кубики работают медленнее — от 4 до 12 недель.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Влияет ли фракция щепы на вкус напитка?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Да. Мелкая щепа быстрее отдаёт аромат — насыщение происходит за 1–3 недели. Крупная (кубики) действует медленно и мягче — идеально для длительной выдержки без риска перенасыщения горькими танинами.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Можно ли использовать щепу повторно?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Повторное использование возможно, но эффект будет значительно слабее. Щепа уже отдала большую часть экстрактивных веществ. Для полноценного аромата рекомендуем использовать свежую щепу.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Как хранить дубовую щепу?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Храните в сухом, прохладном месте без прямых солнечных лучей, в закрытой упаковке или стеклянной банке. При правильном хранении щепа не теряет свойств в течение 2–3 лет.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Какова стоимость и условия доставки?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Доставка осуществляется по всей России. Стоимость рассчитывается по тарифам транспортной компании. При заказе от определённой суммы доставка бесплатна. Подробности — на странице доставки или по запросу.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Какие способы оплаты доступны?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Принимаем оплату картой онлайн, через Wildberries, а также по безналичному расчёту для оптовых клиентов.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Есть ли оптовые скидки?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Да, при крупных заказах предоставляем индивидуальные условия. Свяжитесь с нами для обсуждения оптового сотрудничества.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span>Можно ли вернуть товар, если он не подошёл?</span>
+              <svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="faq-answer">
+              <p>Возврат возможен в течение 14 дней с момента получения, если товар не был в употреблении и сохранена оригинальная упаковка. По вопросам возврата свяжитесь с нами напрямую.</p>
+            </div>
+          </div>
+
+          <!-- Пустой результат поиска -->
+          <div class="faq-empty" id="faq-empty" style="display:none;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <p>Ничего не найдено. Попробуйте другой запрос или напишите нам.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // ── Раскрытие FAQ ──
+  function toggleFaq(btn) {
+    const item   = btn.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const isOpen = item.classList.contains('open');
+
+    // Закрыть все
+    document.querySelectorAll('.faq-item.open').forEach(el => {
+      el.classList.remove('open');
+      el.querySelector('.faq-answer').style.maxHeight = null;
+    });
+
+    // Открыть нажатый (если был закрыт)
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  }
+
+  // ── Поиск по FAQ ──
+  function searchFaq(query) {
+    const q     = query.trim().toLowerCase();
+    const items = document.querySelectorAll('.faq-item');
+    let   found = 0;
+
+    items.forEach(item => {
+      const text = item.querySelector('.faq-question span').textContent.toLowerCase()
+                 + item.querySelector('.faq-answer p').textContent.toLowerCase();
+      const match = !q || text.includes(q);
+      item.style.display = match ? '' : 'none';
+      if (match) found++;
+    });
+
+    document.getElementById('faq-empty').style.display = (found === 0) ? 'flex' : 'none';
+  }
+</script>
+{% endblock %}
