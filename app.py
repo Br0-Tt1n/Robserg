@@ -1,3 +1,4 @@
+import json
 from flask import Flask, render_template, request, redirect, url_for, flash
 
 app = Flask(__name__)
@@ -88,6 +89,69 @@ DEMO_CART = [
     {**PRODUCTS[3], "qty": 1},
 ]
 
+REVIEWS = [
+    {
+        "id": 1,
+        "author": "Алексей П.",
+        "date": "12 мая 2024",
+        "rating": 5,
+        "text": "Щепа отличного качества! Настойки приобретают мягкий аромат и красивый янтарный цвет. Заказываю не в первый раз.",
+        "photos": ["images/WoodChips.png", "images/WoodChipsLow.png", "images/Cube.png"],
+        "product": "Дубовая щепа, сильный обжиг",
+        "avatar": None,
+    },
+    {
+        "id": 2,
+        "author": "Мария С.",
+        "date": "7 мая 2024",
+        "rating": 5,
+        "text": "Добавляю щепу в сыр при созревании — вкус становится глубже и интереснее. Очень довольна результатом!",
+        "photos": ["images/CubeMedium.png", "images/WoodChips.png", "images/Cube.png"],
+        "product": "Кубики дубовые, средний обжиг",
+        "avatar": None,
+    },
+    {
+        "id": 3,
+        "author": "Игорь К.",
+        "date": "3 мая 2024",
+        "rating": 5,
+        "text": "Использую щепу для выдержки пива — получается отличный результат. Спасибо за стабильное качество!",
+        "photos": ["images/WoodChipsLow.png", "images/WoodChips.png", "images/CubeMedium.png"],
+        "product": "Дубовая щепа, средний обжиг",
+        "avatar": None,
+    },
+    {
+        "id": 4,
+        "author": "Екатерина Л.",
+        "date": "29 апреля 2024",
+        "rating": 5,
+        "text": "Очень понравилась упаковка и быстрая доставка. Щепа чистая, без пыли и посторонних запахов.",
+        "photos": ["images/Cube.png", "images/WoodChips.png", "images/WoodChipsLow.png"],
+        "product": "Дубовая щепа, лёгкий обжиг",
+        "avatar": None,
+    },
+    {
+        "id": 5,
+        "author": "Виктор Д.",
+        "date": "20 апреля 2024",
+        "rating": 4,
+        "text": "Хорошая щепа, аромат насыщенный. Чуть дольше ждал доставку, чем ожидал, но качеством доволен.",
+        "photos": [],
+        "product": "Дубовая щепа, сильный обжиг",
+        "avatar": None,
+    },
+    {
+        "id": 6,
+        "author": "Наталья В.",
+        "date": "15 апреля 2024",
+        "rating": 5,
+        "text": "Заказала для домашнего самогона — результат превзошёл ожидания. Напиток приобрёл благородный вкус и цвет.",
+        "photos": [],
+        "product": "Кубики дубовые, средний обжиг",
+        "avatar": None,
+    },
+]
+
 SITE_META = {
     "title":      "Robserg — Дубовая щепа и кубик с Кавказа",
     "logo_text":  "ROBSERG",
@@ -98,6 +162,18 @@ SITE_META = {
     "vk_url":     "https://vk.com",
     "max_url":    "https://max.ru",
 }
+
+# Подсчёт рейтинга из списка отзывов
+def calc_rating(reviews):
+    total = len(reviews)
+    if total == 0:
+        return {"average": 0, "total": 0, "breakdown": []}
+    avg = round(sum(r["rating"] for r in reviews) / total, 1)
+    breakdown = []
+    for stars in range(5, 0, -1):
+        count = sum(1 for r in reviews if r["rating"] == stars)
+        breakdown.append({"stars": stars, "count": count})
+    return {"average": avg, "total": total, "breakdown": breakdown}
 
 # ─────────────────────────────────────────────
 # ДОБАВЛЕНО: вспомогательная функция nav_links
@@ -112,7 +188,7 @@ def make_nav_links(active_endpoint: str) -> list:
         {"href": url_for("delivery"), "label": "Доставка", "endpoint": "delivery"},
         {"href": url_for("information"), "label": "Информация", "endpoint": "information"},
         {"href": url_for("contacts"), "label": "Контакты", "endpoint": "contacts"},
-        {"href": "#reviews", "label": "Отзывы",   "endpoint": "None"},
+        {"href": url_for("reviews"), "label": "Отзывы",   "endpoint": "reviews"},
        
     ]
     for link in links:
@@ -216,6 +292,20 @@ def contacts():
         "contacts.html",
         nav_links=make_nav_links("contacts"),
         meta=SITE_META,
+    )
+
+@app.route("/reviews")
+def reviews():
+    rating = calc_rating(REVIEWS)
+    # На первый рендер отдаём первые 4 отзыва через Jinja,
+    # все остальные — как JSON для кнопки «Показать ещё»
+    return render_template(
+        "reviews.html",
+        nav_links=make_nav_links("reviews"),
+        meta=SITE_META,
+        reviews=REVIEWS[:4],
+        reviews_json=json.dumps(REVIEWS, ensure_ascii=False),
+        rating=rating,
     )
 
 @app.route("/submit", methods=["POST"])

@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Отзывы — {{ meta.title }}{% endblock %}
+
+{% block content %}
+
+<!-- ════════════ HERO ОТЗЫВОВ ════════════ -->
+<section class="cat-hero reviews-hero">
+  <div class="cat-hero-bg">
+    <img src="{{ url_for('static', filename='images/CatalogPhoto.png') }}" alt="Отзывы" />
+  </div>
+  <div class="cat-hero-overlay"></div>
+  <div class="cat-hero-content container">
+    <div class="cat-hero-text">
+      <nav class="cat-breadcrumb">
+        <a href="{{ url_for('index') }}">Главная</a>
+        <span>/</span>
+        <span>Отзывы</span>
+      </nav>
+      <h1 class="cat-hero-title reviews-hero-title">Отзывы<br>нашей продукции</h1>
+      <p class="cat-hero-sub">Нам важно ваше мнение — оно помогает нам<br>становиться лучше</p>
+      <div class="reviews-hero-btns">
+        <a href="{{ url_for('catalog') }}" class="btn btn-img"></a>
+        <a href="{{ meta.wb_url }}" target="_blank" class="btn btn-wb"></a>
+      </div>
+    </div>
+    <div class="hero-logo-wrap">
+      <a href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/Logo.png') }}"
+             alt="{{ meta.logo_text }}"
+             class="hero-logo-img" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ТРАСТОВЫЕ ИКОНКИ ════════════ -->
+<section class="reviews-trust">
+  <div class="container">
+    <div class="reviews-trust-grid">
+      <div class="reviews-trust-item">
+        <div class="reviews-trust-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </div>
+        <h4>Честное качество</h4>
+        <p>Только натуральная дубовая щепа без добавок</p>
+      </div>
+      <div class="reviews-trust-item">
+        <div class="reviews-trust-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <h4>Тысячи довольных клиентов</h4>
+        <p>Нас выбирают пивовары, винокуры и самогонщики</p>
+      </div>
+      <div class="reviews-trust-item">
+        <div class="reviews-trust-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <h4>Нам можно доверять</h4>
+        <p>Работаем открыто и ценим обратную связь</p>
+      </div>
+      <div class="reviews-trust-item">
+        <div class="reviews-trust-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+            <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+          </svg>
+        </div>
+        <h4>Быстрая поддержка</h4>
+        <p>Всегда на связи и готовы помочь</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ РЕЙТИНГ + ОТЗЫВЫ ════════════ -->
+<section class="reviews-main">
+  <div class="container">
+
+    <!-- Блок с рейтингом -->
+    <div class="reviews-rating-block">
+      <div class="reviews-rating-left">
+        <h2 class="reviews-rating-heading">Что говорят<br>наши клиенты</h2>
+      </div>
+      <div class="reviews-rating-center">
+        <div class="reviews-rating-score">{{ rating.average }}</div>
+        <div class="reviews-rating-stars">
+          {% for i in range(5) %}
+            {% if i < rating.average | int %}
+              <svg class="star-filled" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {% else %}
+              <svg class="star-empty" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <p class="reviews-rating-count">на основе {{ rating.total }} отзывов</p>
+      </div>
+      <div class="reviews-rating-bars">
+        {% for bar in rating.breakdown %}
+        <div class="rating-bar-row">
+          <span class="rating-bar-label">{{ bar.stars }}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color:var(--clr-gold)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </span>
+          <div class="rating-bar-track">
+            <div class="rating-bar-fill" style="width: {{ (bar.count / rating.total * 100) | round | int }}%"></div>
+          </div>
+          <span class="rating-bar-count">{{ bar.count }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Сетка отзывов -->
+    <div class="reviews-grid" id="reviews-grid">
+      {% for review in reviews %}
+      <div class="review-card">
+        <div class="review-card-header">
+          <div class="review-avatar">
+            {% if review.avatar %}
+              <img src="{{ url_for('static', filename=review.avatar) }}" alt="{{ review.author }}" />
+            {% else %}
+              <span class="review-avatar-letter">{{ review.author[0] }}</span>
+            {% endif %}
+          </div>
+          <div class="review-meta">
+            <p class="review-author">{{ review.author }}</p>
+            <p class="review-date">{{ review.date }}</p>
+          </div>
+          <div class="review-stars">
+            {% for i in range(review.rating) %}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:var(--clr-gold)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {% endfor %}
+          </div>
+        </div>
+        <p class="review-text">{{ review.text }}</p>
+        {% if review.photos %}
+        <div class="review-photos">
+          {% for photo in review.photos %}
+          <div class="review-photo">
+            <img src="{{ url_for('static', filename=photo) }}" alt="Фото отзыва" loading="lazy" />
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if review.product %}
+        <p class="review-product">{{ review.product }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Кнопка "Показать ещё" -->
+    <div class="reviews-load-more">
+      <button class="btn btn-dark reviews-load-btn" id="load-more-btn" onclick="loadMoreReviews()">
+        Показать ещё отзывы
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════ CTA — ПРИСОЕДИНЯЙТЕСЬ ════════════ -->
+<section class="reviews-cta">
+  <div class="reviews-cta-bg">
+    <img src="{{ url_for('static', filename='images/main.png') }}" alt="" />
+  </div>
+  <div class="reviews-cta-overlay"></div>
+  <div class="container reviews-cta-content">
+    <div class="reviews-cta-text">
+      <h2>Присоединяйтесь к тысячам<br>довольных клиентов</h2>
+      <p>Попробуйте нашу продукцию и поделитесь своим отзывом</p>
+      <div class="reviews-cta-btns">
+        <a href="{{ url_for('catalog') }}" class="btn btn-img"></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let page = 1;
+  const PER_PAGE = 4;
+
+  const allReviews = {{ reviews_json | safe }};
+
+  function loadMoreReviews() {
+    page++;
+    const start = page * PER_PAGE;
+    const chunk = allReviews.slice(start, start + PER_PAGE);
+    const grid = document.getElementById('reviews-grid');
+    const btn  = document.getElementById('load-more-btn');
+
+    if (chunk.length === 0) {
+      btn.textContent = 'Все отзывы загружены';
+      btn.disabled = true;
+      return;
+    }
+
+    chunk.forEach(r => {
+      const stars = Array.from({length: r.rating}, () =>
+        `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:var(--clr-gold)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+      ).join('');
+
+      const photos = (r.photos || []).map(p =>
+        `<div class="review-photo"><img src="/static/${p}" alt="Фото" loading="lazy" /></div>`
+      ).join('');
+
+      const card = document.createElement('div');
+      card.className = 'review-card review-card--new';
+      card.innerHTML = `
+        <div class="review-card-header">
+          <div class="review-avatar">
+            <span class="review-avatar-letter">${r.author[0]}</span>
+          </div>
+          <div class="review-meta">
+            <p class="review-author">${r.author}</p>
+            <p class="review-date">${r.date}</p>
+          </div>
+          <div class="review-stars">${stars}</div>
+        </div>
+        <p class="review-text">${r.text}</p>
+        ${photos ? `<div class="review-photos">${photos}</div>` : ''}
+        ${r.product ? `<p class="review-product">${r.product}</p>` : ''}
+      `;
+      grid.appendChild(card);
+
+      requestAnimationFrame(() => card.classList.add('visible'));
+    });
+
+    if (start + PER_PAGE >= allReviews.length) {
+      btn.textContent = 'Все отзывы загружены';
+      btn.disabled = true;
+    }
+  }
+</script>
+{% endblock %}
