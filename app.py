@@ -1,13 +1,46 @@
+import os
 import json
+import pymysql
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from dotenv import load_dotenv
+from models import db, Product, ProductImage, User, Order, OrderItem, Review, ContactRequest, Address
+
+pymysql.install_as_MySQLdb()
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "robserg-secret-key"
 
-# ─────────────────────────────────────────────
-# ДАННЫЕ
-# ИЗМЕНЕНО: добавлено поле "weight" в каждый товар
-# ─────────────────────────────────────────────
+# ─── КОНФИГУРАЦИЯ ────────────────────────────────────────
+app.secret_key = os.environ.get("SECRET_KEY", "dev-fallback-key")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_recycle": 280,
+    "pool_pre_ping": True,
+    "pool_timeout": 20,
+    "max_overflow": 0,
+}
+
+db.init_app(app)
+
+# ─── FLASK-LOGIN ──────────────────────────────────────────
+login_manager = LoginManager(app)
+login_manager.login_view = "index"          # куда редиректить если не авторизован
+login_manager.login_message = "Войдите в аккаунт для доступа к этой странице."
+login_manager.login_message_category = "error"
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+with app.app_context():
+    db.create_all()
+
+
+# ─────────────────────────────────────────────────────────
+# СТАТИЧЕСКИЕ ДАННЫЕ
+# ─────────────────────────────────────────────────────────
 
 PRODUCTS = [
     {
@@ -15,7 +48,7 @@ PRODUCTS = [
         "name": "Щепа дубовая — лёгкий обжиг",
         "description": "Мягкий ванильный аромат, золотистый цвет. Идеально для самогона и кальвадоса.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": "Хит",
         "image_url": "images/WoodChipsLow.png",
     },
@@ -24,7 +57,7 @@ PRODUCTS = [
         "name": "Щепа дубовая — средний обжиг",
         "description": "Баланс ванили и карамели. Универсальный выбор для виски и коньяка.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": "Топ продаж",
         "image_url": "images/WoodChips.png",
     },
@@ -33,25 +66,25 @@ PRODUCTS = [
         "name": "Щепа дубовая — сильный обжиг",
         "description": "Глубокий дымный вкус с нотами шоколада и кофе. Для тёмных дистиллятов.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": None,
         "image_url": "images/Cube.png",
     },
     {
         "id": 4,
         "name": "Кубик дубовый - средний обжиг",
-        "description": "Дубовые кубики для настаивания самогона, спирта и других крепких напитков. Изготовлены из натурального дуба без химических добавок и ароматизаторов. Придают напиткам благородные нотки ванили, карамели, шоколада и миндаля, создавая эффект выдержки в дубовой бочке. Просты в использовании и помогают получить насыщенный вкус и аромат в домашних условиях.",
+        "description": "Дубовые кубики для настаивания самогона, спирта и других крепких напитков.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": "Новинка",
         "image_url": "images/CubeMedium.png",
     },
-        {
+    {
         "id": 5,
         "name": "Щепа дубовая — лёгкий обжиг",
         "description": "Мягкий ванильный аромат, золотистый цвет. Идеально для самогона и кальвадоса.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": "Хит",
         "image_url": "images/WoodChipsLow.png",
     },
@@ -60,7 +93,7 @@ PRODUCTS = [
         "name": "Щепа дубовая — средний обжиг",
         "description": "Баланс ванили и карамели. Универсальный выбор для виски и коньяка.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": "Топ продаж",
         "image_url": "images/WoodChips.png",
     },
@@ -69,20 +102,21 @@ PRODUCTS = [
         "name": "Щепа дубовая — сильный обжиг",
         "description": "Глубокий дымный вкус с нотами шоколада и кофе. Для тёмных дистиллятов.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": None,
         "image_url": "images/Cube.png",
     },
     {
         "id": 8,
         "name": "Кубик дубовый - средний обжиг",
-        "description": "Крупная фракция для длительной выдержки. Равномерная экстракция дубильных веществ.",
+        "description": "Крупная фракция для длительной выдержки. Равномерная экстракция.",
         "price": 700,
-        "weight": "500 гр.",          # ДОБАВЛЕНО
+        "weight": "500 гр.",
         "badge": "Новинка",
         "image_url": "images/CubeMedium.png",
     },
 ]
+
 DEMO_CART = [
     {**PRODUCTS[0], "qty": 2},
     {**PRODUCTS[1], "qty": 1},
@@ -95,7 +129,7 @@ REVIEWS = [
         "author": "Алексей П.",
         "date": "12 мая 2024",
         "rating": 5,
-        "text": "Щепа отличного качества! Настойки приобретают мягкий аромат и красивый янтарный цвет. Заказываю не в первый раз.",
+        "text": "Щепа отличного качества! Настойки приобретают мягкий аромат и красивый янтарный цвет.",
         "photos": ["images/WoodChips.png", "images/WoodChipsLow.png", "images/Cube.png"],
         "product": "Дубовая щепа, сильный обжиг",
         "avatar": None,
@@ -105,8 +139,8 @@ REVIEWS = [
         "author": "Мария С.",
         "date": "7 мая 2024",
         "rating": 5,
-        "text": "Добавляю щепу в сыр при созревании — вкус становится глубже и интереснее. Очень довольна результатом!",
-        "photos": ["images/CubeMedium.png", "images/WoodChips.png", "images/Cube.png"],
+        "text": "Добавляю щепу в сыр при созревании — вкус становится глубже и интереснее.",
+        "photos": ["images/CubeMedium.png", "images/WoodChips.png"],
         "product": "Кубики дубовые, средний обжиг",
         "avatar": None,
     },
@@ -115,8 +149,8 @@ REVIEWS = [
         "author": "Игорь К.",
         "date": "3 мая 2024",
         "rating": 5,
-        "text": "Использую щепу для выдержки пива — получается отличный результат. Спасибо за стабильное качество!",
-        "photos": ["images/WoodChipsLow.png", "images/WoodChips.png", "images/CubeMedium.png"],
+        "text": "Использую щепу для выдержки пива — получается отличный результат.",
+        "photos": ["images/WoodChipsLow.png", "images/WoodChips.png"],
         "product": "Дубовая щепа, средний обжиг",
         "avatar": None,
     },
@@ -125,29 +159,9 @@ REVIEWS = [
         "author": "Екатерина Л.",
         "date": "29 апреля 2024",
         "rating": 5,
-        "text": "Очень понравилась упаковка и быстрая доставка. Щепа чистая, без пыли и посторонних запахов.",
-        "photos": ["images/Cube.png", "images/WoodChips.png", "images/WoodChipsLow.png"],
+        "text": "Очень понравилась упаковка и быстрая доставка. Щепа чистая, без пыли.",
+        "photos": [],
         "product": "Дубовая щепа, лёгкий обжиг",
-        "avatar": None,
-    },
-    {
-        "id": 5,
-        "author": "Виктор Д.",
-        "date": "20 апреля 2024",
-        "rating": 4,
-        "text": "Хорошая щепа, аромат насыщенный. Чуть дольше ждал доставку, чем ожидал, но качеством доволен.",
-        "photos": [],
-        "product": "Дубовая щепа, сильный обжиг",
-        "avatar": None,
-    },
-    {
-        "id": 6,
-        "author": "Наталья В.",
-        "date": "15 апреля 2024",
-        "rating": 5,
-        "text": "Заказала для домашнего самогона — результат превзошёл ожидания. Напиток приобрёл благородный вкус и цвет.",
-        "photos": [],
-        "product": "Кубики дубовые, средний обжиг",
         "avatar": None,
     },
 ]
@@ -163,7 +177,11 @@ SITE_META = {
     "max_url":    "https://max.ru",
 }
 
-# Подсчёт рейтинга из списка отзывов
+
+# ─────────────────────────────────────────────────────────
+# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+# ─────────────────────────────────────────────────────────
+
 def calc_rating(reviews):
     total = len(reviews)
     if total == 0:
@@ -175,86 +193,172 @@ def calc_rating(reviews):
         breakdown.append({"stars": stars, "count": count})
     return {"average": avg, "total": total, "breakdown": breakdown}
 
-# ─────────────────────────────────────────────
-# ДОБАВЛЕНО: вспомогательная функция nav_links
-# Проставляет active по имени endpoint-а
-# (раньше active ставился через loop.first — ИЗМЕНЕНО)
-# ─────────────────────────────────────────────
 
 def make_nav_links(active_endpoint: str) -> list:
     links = [
-        {"href": url_for("index"),   "label": "Главная",  "endpoint": "index"},
-        {"href": url_for("catalog"), "label": "Каталог",  "endpoint": "catalog"},
-        {"href": url_for("delivery"), "label": "Доставка", "endpoint": "delivery"},
+        {"href": url_for("index"),       "label": "Главная",    "endpoint": "index"},
+        {"href": url_for("catalog"),     "label": "Каталог",    "endpoint": "catalog"},
+        {"href": url_for("delivery"),    "label": "Доставка",   "endpoint": "delivery"},
         {"href": url_for("information"), "label": "Информация", "endpoint": "information"},
-        {"href": url_for("contacts"), "label": "Контакты", "endpoint": "contacts"},
-        {"href": url_for("reviews"), "label": "Отзывы",   "endpoint": "reviews"},
-       
+        {"href": url_for("contacts"),    "label": "Контакты",   "endpoint": "contacts"},
+        {"href": url_for("reviews"),     "label": "Отзывы",     "endpoint": "reviews"},
     ]
     for link in links:
         link["active"] = (link["endpoint"] == active_endpoint)
     return links
 
 
-# ─────────────────────────────────────────────
-# РОУТЫ
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────
+# АУТЕНТИФИКАЦИЯ
+# ─────────────────────────────────────────────────────────
 
-# ── страница каталога главной──────────────
+@app.route("/login", methods=["POST"])
+def login():
+    email    = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+    remember = bool(request.form.get("remember"))
+    next_url = request.form.get("next") or url_for("index")
+
+    if not email or not password:
+        flash("Заполните все поля.", "error")
+        return redirect(next_url)
+
+    user = User.query.filter_by(email=email).first()
+    if user and user.check_password(password):
+        login_user(user, remember=remember)
+        flash(f"Добро пожаловать, {user.first_name or user.email}!", "success")
+        return redirect(next_url)
+
+    flash("Неверный e-mail или пароль.", "error")
+    return redirect(next_url)
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    first_name = request.form.get("first_name", "").strip()
+    email      = request.form.get("email", "").strip().lower()
+    password   = request.form.get("password", "")
+    password2  = request.form.get("password2", "")
+    next_url   = request.form.get("next") or url_for("index")
+
+    if not first_name or not email or not password:
+        flash("Заполните все обязательные поля.", "error")
+        return redirect(next_url)
+
+    if password != password2:
+        flash("Пароли не совпадают.", "error")
+        return redirect(next_url)
+
+    if len(password) < 6:
+        flash("Пароль должен быть не менее 6 символов.", "error")
+        return redirect(next_url)
+
+    if User.query.filter_by(email=email).first():
+        flash("Пользователь с таким e-mail уже существует.", "error")
+        return redirect(next_url)
+
+    user = User(first_name=first_name, email=email)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+
+    login_user(user)
+    flash(f"Аккаунт создан! Добро пожаловать, {first_name}!", "success")
+    return redirect(next_url)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("Вы вышли из аккаунта.", "success")
+    return redirect(url_for("index"))
+
+
+# ─────────────────────────────────────────────────────────
+# ОСНОВНЫЕ РОУТЫ
+# ─────────────────────────────────────────────────────────
+
 @app.route("/")
 def index():
     return render_template(
         "index.html",
-        products=PRODUCTS[:4],          # на главной — только 4 товара
+        products=PRODUCTS[:4],
         nav_links=make_nav_links("index"),
         meta=SITE_META,
     )
 
 
-# ── страница каталога ──────────────
 @app.route("/catalog")
 def catalog():
     return render_template(
         "catalog.html",
-        products=PRODUCTS,              # все товары
+        products=PRODUCTS,
         nav_links=make_nav_links("catalog"),
         meta=SITE_META,
     )
 
+
 @app.route("/profile")
+@login_required
 def profile():
-    # TODO: получать user из сессии/БД
-    # user = db.get_user(session['user_id'])
-    # orders = db.get_orders(user.id)
-    # addresses = db.get_addresses(user.id)
+    # Реальные заявки пользователя из БД
+    orders = ContactRequest.query.filter_by(
+        # Если хотите фильтровать по email пользователя:
+        email=current_user.email
+    ).order_by(ContactRequest.created_at.desc()).all()
+
+    # Адреса из БД
+    addresses = Address.query.filter_by(user_id=current_user.id).all()
+
     return render_template(
         "profile.html",
         nav_links=make_nav_links(None),
         meta=SITE_META,
-        user=None,      # заглушка
-        orders=None,    # заглушка
-        addresses=None, # заглушка
+        user=current_user,
+        orders=orders,
+        addresses=addresses,
     )
 
+
 @app.route("/profile/save", methods=["POST"])
+@login_required
 def profile_save():
-    # TODO: сохранить в БД
-    # first_name = request.form.get("first_name")
-    # ...
+    current_user.first_name = request.form.get("first_name", "").strip()
+    current_user.last_name  = request.form.get("last_name", "").strip()
+    current_user.email      = request.form.get("email", "").strip().lower()
+    current_user.phone      = request.form.get("phone", "").strip()
+    db.session.commit()
     flash("Данные сохранены.", "success")
     return redirect(url_for("profile"))
 
+
 @app.route("/profile/add-address", methods=["POST"])
+@login_required
 def profile_add_address():
-    # TODO: сохранить адрес в БД
+    address_text = request.form.get("address", "").strip()
+    contact      = request.form.get("contact", "").strip()
+    is_main      = bool(request.form.get("is_main"))
+
+    if not address_text:
+        flash("Укажите адрес.", "error")
+        return redirect(url_for("profile"))
+
+    # Если новый адрес — основной, снимаем флаг с остальных
+    if is_main:
+        Address.query.filter_by(user_id=current_user.id).update({"is_main": False})
+
+    addr = Address(
+        user_id=current_user.id,
+        address=address_text,
+        contact=contact,
+        is_main=is_main,
+    )
+    db.session.add(addr)
+    db.session.commit()
     flash("Адрес добавлен.", "success")
     return redirect(url_for("profile"))
 
-@app.route("/logout")
-def logout():
-    # TODO: session.clear() или logout_user() когда будет аутентификация
-    flash("Вы вышли из аккаунта.", "success")
-    return redirect(url_for("index"))
 
 @app.route("/delivery")
 def delivery():
@@ -264,12 +368,11 @@ def delivery():
         meta=SITE_META,
     )
 
+
 @app.route("/cart")
 def cart():
-    # TODO: получать корзину из сессии или БД
-    # cart_items = session.get('cart', [])
-    cart_items = DEMO_CART          # заглушка
-    recommended = PRODUCTS[4:7]     # «Вам понравится»
+    cart_items  = DEMO_CART
+    recommended = PRODUCTS[4:7]
     return render_template(
         "cart.html",
         cart_items=cart_items,
@@ -278,6 +381,7 @@ def cart():
         meta=SITE_META,
     )
 
+
 @app.route("/information")
 def information():
     return render_template(
@@ -285,7 +389,8 @@ def information():
         nav_links=make_nav_links("information"),
         meta=SITE_META,
     )
- 
+
+
 @app.route("/contacts")
 def contacts():
     return render_template(
@@ -294,11 +399,10 @@ def contacts():
         meta=SITE_META,
     )
 
+
 @app.route("/reviews")
 def reviews():
     rating = calc_rating(REVIEWS)
-    # На первый рендер отдаём первые 4 отзыва через Jinja,
-    # все остальные — как JSON для кнопки «Показать ещё»
     return render_template(
         "reviews.html",
         nav_links=make_nav_links("reviews"),
@@ -307,6 +411,7 @@ def reviews():
         reviews_json=json.dumps(REVIEWS, ensure_ascii=False),
         rating=rating,
     )
+
 
 @app.route("/submit", methods=["POST"])
 def submit():
@@ -317,20 +422,16 @@ def submit():
     call_time      = request.form.get("call_time", "").strip()
     message        = request.form.get("message", "").strip()
 
-    method_labels = {
-        "phone": "Позвонить по телефону",
-        "email": "Почта",
-        "vk":    "ВКонтакте",
-        "max":   "МАКС",
-    }
-    method_str    = method_labels.get(contact_method, contact_method)
-    call_time_str = f" (удобное время: {call_time})" if contact_method == "phone" and call_time else ""
-
-    print(
-        f"[ЗАЯВКА] {name} | {phone} | {email}\n"
-        f"  Способ связи: {method_str}{call_time_str}\n"
-        f"  Сообщение: {message}"
+    new_request = ContactRequest(
+        name=name,
+        phone=phone,
+        email=email,
+        contact_method=contact_method,
+        call_time=call_time if contact_method == "phone" else None,
+        message=message,
     )
+    db.session.add(new_request)
+    db.session.commit()
 
     flash("Ваша заявка принята! Мы свяжемся с вами в ближайшее время.", "success")
     return redirect(url_for("index") + "#faq")

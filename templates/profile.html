@@ -106,7 +106,7 @@
             </div>
             <div class="personal-field">
               <label class="personal-label">Дата регистрации</label>
-              <input type="text" class="personal-input" value="{{ user.registered if user else '12 марта 2024' }}" readonly disabled />
+              <input type="text" class="personal-input" value="{{ current_user.created_at.strftime('%d %B %Y') if current_user.created_at else '—' }}" readonly disabled />
             </div>
             <div class="personal-field personal-field--full">
               <label class="personal-label">Телефон</label>
