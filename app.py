@@ -13,16 +13,35 @@ app = Flask(__name__)
 
 # ─── КОНФИГУРАЦИЯ ────────────────────────────────────────
 app.secret_key = os.environ.get("SECRET_KEY", "dev-fallback-key")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_recycle": 280,
-    "pool_pre_ping": True,
-    "pool_timeout": 20,
-    "max_overflow": 0,
-}
 
-db.init_app(app)
+# Глобальный флаг доступности БД
+DB_AVAILABLE = False
+
+# Пробуем настроить БД, но не блокируем запуск при ошибке
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_recycle": 280,
+        "pool_pre_ping": True,
+        "pool_timeout": 20,
+        "max_overflow": 0,
+    }
+    db.init_app(app)
+    
+    # Создаём таблицы при старте, но не блокируем запуск при ошибке подключения
+    try:
+        with app.app_context():
+            db.create_all()
+        DB_AVAILABLE = True
+        print("[INFO] База данных подключена успешно")
+    except Exception as e:
+        print(f"[WARNING] Не удалось создать таблицы БД: {e}")
+        print("[WARNING] Приложение запустится в режиме без БД")
+else:
+    # Режим без БД
+    print("[INFO] DATABASE_URL не указан, работа без БД")
 
 # ─── FLASK-LOGIN ──────────────────────────────────────────
 login_manager = LoginManager(app)
@@ -32,10 +51,12 @@ login_manager.login_message_category = "error"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
-
-with app.app_context():
-    db.create_all()
+    if not DB_AVAILABLE:
+        return None
+    try:
+        return User.query.get(int(user_id))
+    except Exception:
+        return None
 
 
 # ─────────────────────────────────────────────────────────
@@ -223,13 +244,20 @@ def login():
         flash("Заполните все поля.", "error")
         return redirect(next_url)
 
-    user = User.query.filter_by(email=email).first()
-    if user and user.check_password(password):
-        login_user(user, remember=remember)
-        flash(f"Добро пожаловать, {user.first_name or user.email}!", "success")
+    if not DB_AVAILABLE:
+        flash("База данных недоступна. Вход невозможен.", "error")
         return redirect(next_url)
 
-    flash("Неверный e-mail или пароль.", "error")
+    try:
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            login_user(user, remember=remember)
+            flash(f"Добро пожаловать, {user.first_name or user.email}!", "success")
+            return redirect(next_url)
+        flash("Неверный e-mail или пароль.", "error")
+    except Exception as e:
+        print(f"[ERROR] Ошибка при входе: {e}")
+        flash("Ошибка базы данных. Попробуйте позже.", "error")
     return redirect(next_url)
 
 
@@ -253,17 +281,25 @@ def register():
         flash("Пароль должен быть не менее 6 символов.", "error")
         return redirect(next_url)
 
-    if User.query.filter_by(email=email).first():
-        flash("Пользователь с таким e-mail уже существует.", "error")
+    if not DB_AVAILABLE:
+        flash("База данных недоступна. Регистрация невозможна.", "error")
         return redirect(next_url)
 
-    user = User(first_name=first_name, email=email)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
+    try:
+        if User.query.filter_by(email=email).first():
+            flash("Пользователь с таким e-mail уже существует.", "error")
+            return redirect(next_url)
 
-    login_user(user)
-    flash(f"Аккаунт создан! Добро пожаловать, {first_name}!", "success")
+        user = User(first_name=first_name, email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+
+        login_user(user)
+        flash(f"Аккаунт создан! Добро пожаловать, {first_name}!", "success")
+    except Exception as e:
+        print(f"[ERROR] Ошибка при регистрации: {e}")
+        flash("Ошибка базы данных. Попробуйте позже.", "error")
     return redirect(next_url)
 
 
@@ -303,13 +339,18 @@ def catalog():
 @login_required
 def profile():
     # Реальные заявки пользователя из БД
-    orders = ContactRequest.query.filter_by(
-        # Если хотите фильтровать по email пользователя:
-        email=current_user.email
-    ).order_by(ContactRequest.created_at.desc()).all()
+    orders = []
+    addresses = []
 
-    # Адреса из БД
-    addresses = Address.query.filter_by(user_id=current_user.id).all()
+    if DB_AVAILABLE:
+        try:
+            orders = ContactRequest.query.filter_by(
+                email=current_user.email
+            ).order_by(ContactRequest.created_at.desc()).all()
+            addresses = Address.query.filter_by(user_id=current_user.id).all()
+        except Exception as e:
+            print(f"[ERROR] Ошибка при загрузке профиля: {e}")
+            flash("Не удалось загрузить данные из БД", "warning")
 
     return render_template(
         "profile.html",
@@ -324,12 +365,20 @@ def profile():
 @app.route("/profile/save", methods=["POST"])
 @login_required
 def profile_save():
-    current_user.first_name = request.form.get("first_name", "").strip()
-    current_user.last_name  = request.form.get("last_name", "").strip()
-    current_user.email      = request.form.get("email", "").strip().lower()
-    current_user.phone      = request.form.get("phone", "").strip()
-    db.session.commit()
-    flash("Данные сохранены.", "success")
+    if not DB_AVAILABLE:
+        flash("База данных недоступна. Сохранение невозможно.", "error")
+        return redirect(url_for("profile"))
+
+    try:
+        current_user.first_name = request.form.get("first_name", "").strip()
+        current_user.last_name  = request.form.get("last_name", "").strip()
+        current_user.email      = request.form.get("email", "").strip().lower()
+        current_user.phone      = request.form.get("phone", "").strip()
+        db.session.commit()
+        flash("Данные сохранены.", "success")
+    except Exception as e:
+        print(f"[ERROR] Ошибка при сохранении профиля: {e}")
+        flash("Ошибка при сохранении данных.", "error")
     return redirect(url_for("profile"))
 
 
@@ -344,19 +393,27 @@ def profile_add_address():
         flash("Укажите адрес.", "error")
         return redirect(url_for("profile"))
 
-    # Если новый адрес — основной, снимаем флаг с остальных
-    if is_main:
-        Address.query.filter_by(user_id=current_user.id).update({"is_main": False})
+    if not DB_AVAILABLE:
+        flash("База данных недоступна. Добавление адреса невозможно.", "error")
+        return redirect(url_for("profile"))
 
-    addr = Address(
-        user_id=current_user.id,
-        address=address_text,
-        contact=contact,
-        is_main=is_main,
-    )
-    db.session.add(addr)
-    db.session.commit()
-    flash("Адрес добавлен.", "success")
+    try:
+        # Если новый адрес — основной, снимаем флаг с остальных
+        if is_main:
+            Address.query.filter_by(user_id=current_user.id).update({"is_main": False})
+
+        addr = Address(
+            user_id=current_user.id,
+            address=address_text,
+            contact=contact,
+            is_main=is_main,
+        )
+        db.session.add(addr)
+        db.session.commit()
+        flash("Адрес добавлен.", "success")
+    except Exception as e:
+        print(f"[ERROR] Ошибка при добавлении адреса: {e}")
+        flash("Ошибка при добавлении адреса.", "error")
     return redirect(url_for("profile"))
 
 
@@ -422,18 +479,25 @@ def submit():
     call_time      = request.form.get("call_time", "").strip()
     message        = request.form.get("message", "").strip()
 
-    new_request = ContactRequest(
-        name=name,
-        phone=phone,
-        email=email,
-        contact_method=contact_method,
-        call_time=call_time if contact_method == "phone" else None,
-        message=message,
-    )
-    db.session.add(new_request)
-    db.session.commit()
+    if not DB_AVAILABLE:
+        flash("Ваша заявка принята! (База данных недоступна, заявка не сохранена)", "warning")
+        return redirect(url_for("index") + "#faq")
 
-    flash("Ваша заявка принята! Мы свяжемся с вами в ближайшее время.", "success")
+    try:
+        new_request = ContactRequest(
+            name=name,
+            phone=phone,
+            email=email,
+            contact_method=contact_method,
+            call_time=call_time if contact_method == "phone" else None,
+            message=message,
+        )
+        db.session.add(new_request)
+        db.session.commit()
+        flash("Ваша заявка принята! Мы свяжемся с вами в ближайшее время.", "success")
+    except Exception as e:
+        print(f"[ERROR] Ошибка при отправке заявки: {e}")
+        flash("Ошибка при отправке заявки. Попробуйте позже.", "error")
     return redirect(url_for("index") + "#faq")
 
 
