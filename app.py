@@ -14,34 +14,45 @@ app = Flask(__name__)
 # ─── КОНФИГУРАЦИЯ ────────────────────────────────────────
 app.secret_key = os.environ.get("SECRET_KEY", "dev-fallback-key")
 
-# Глобальный флаг доступности БД
 DB_AVAILABLE = False
 
-# Пробуем настроить БД, но не блокируем запуск при ошибке
-database_url = os.environ.get("DATABASE_URL")
-if database_url:
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+database_url = os.environ.get("DATABASE_URL", "")
+
+# Исправляем формат URL — Railway даёт mysql://, нужен mysql+pymysql://
+if database_url.startswith("mysql://"):
+    database_url = database_url.replace("mysql://", "mysql+pymysql://", 1)
+
+# Убираем ?ssl_disabled из URL если есть — передадим через connect_args
+clean_url = database_url.split("?")[0] if database_url else ""
+
+app.config["SQLALCHEMY_DATABASE_URI"] = clean_url or "sqlite:///:memory:"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+if clean_url and "sqlite" not in clean_url:
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-        "pool_recycle": 280,
+        "pool_recycle":  280,
         "pool_pre_ping": True,
-        "pool_timeout": 20,
-        "max_overflow": 0,
+        "pool_timeout":  10,
+        "max_overflow":  0,
+        "connect_args": {
+            "connect_timeout": 15,
+            "ssl": {"ssl_disabled": True},   # отключаем SSL
+        },
     }
-    db.init_app(app)
-    
-    # Создаём таблицы при старте, но не блокируем запуск при ошибке подключения
+
+db.init_app(app)
+
+if clean_url and "sqlite" not in clean_url:
     try:
         with app.app_context():
             db.create_all()
         DB_AVAILABLE = True
         print("[INFO] База данных подключена успешно")
     except Exception as e:
-        print(f"[WARNING] Не удалось создать таблицы БД: {e}")
-        print("[WARNING] Приложение запустится в режиме без БД")
+        print(f"[WARNING] Не удалось подключиться к БД: {e}")
+        print("[WARNING] Приложение работает без БД")
 else:
-    # Режим без БД
-    print("[INFO] DATABASE_URL не указан, работа без БД")
+    print("[INFO] DATABASE_URL не задан — режим без БД")
 
 # ─── FLASK-LOGIN ──────────────────────────────────────────
 login_manager = LoginManager(app)
